@@ -14,8 +14,8 @@ contract HotPotato is ERC721 {
     constructor() ERC721("HotPotato", "HOT") {}
 
     function safeMint(address to) public {
-        _safeMint(to, _tokenIdCounter.current());
         _lastTouched[_tokenIdCounter.current()] = block.timestamp;
+        _safeMint(to, _tokenIdCounter.current());
         _tokenIdCounter.increment();
     }
 
@@ -23,5 +23,11 @@ contract HotPotato is ERC721 {
         uint256 lastTouched = _lastTouched[tokenId];
         require(lastTouched != 0, "isHot query for nonexistent token");
         return (block.timestamp - lastTouched) < _HOT_DURATION;
+    }
+
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {
+        require(isHot(tokenId), "Cannot transfer cold potato");
+        _lastTouched[tokenId] = block.timestamp;
+        super._beforeTokenTransfer(from, to, tokenId);
     }
 }

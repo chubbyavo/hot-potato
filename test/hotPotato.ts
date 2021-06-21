@@ -3,6 +3,11 @@ import { ethers, network } from "hardhat";
 import { Contract, ContractFactory } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 
+async function increaseEvmTime(seconds: number) {
+  await network.provider.send("evm_increaseTime", [seconds]);
+  await network.provider.send("evm_mine");
+}
+
 describe("HotPotato contract", function () {
   let HotPotato: ContractFactory;
   let hotPotato: Contract;
@@ -47,8 +52,7 @@ describe("HotPotato contract", function () {
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
 
-      await network.provider.send("evm_increaseTime", [3600 * 23]);
-      await network.provider.send("evm_mine");
+      await increaseEvmTime(3600 * 23);
 
       expect(await hotPotato.isHot(0)).to.true;
     });
@@ -58,10 +62,45 @@ describe("HotPotato contract", function () {
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
 
-      await network.provider.send("evm_increaseTime", [3600 * 24]);
-      await network.provider.send("evm_mine");
+      await increaseEvmTime(3600 * 24);
 
       expect(await hotPotato.isHot(0)).to.false;
+    });
+
+    it("Should be able to transfer hot potato", async function () {
+      hotPotato = await HotPotato.deploy();
+      await hotPotato.safeMint(owner.address);
+      expect(await hotPotato.isHot(0)).to.true;
+
+      await hotPotato.transferFrom(owner.address, addr1.address, 0);
+      expect(await hotPotato.ownerOf(0)).to.equal(addr1.address);
+    });
+
+    it("Hotness timer gets reset upon transfer", async function () {
+      hotPotato = await HotPotato.deploy();
+      await hotPotato.safeMint(owner.address);
+      expect(await hotPotato.isHot(0)).to.true;
+
+      await increaseEvmTime(3600 * 23);
+
+      await hotPotato.transferFrom(owner.address, addr1.address, 0);
+      expect(await hotPotato.ownerOf(0)).to.equal(addr1.address);
+
+      await increaseEvmTime(3600 * 23.5);
+      expect(await hotPotato.isHot(0)).to.true;
+    });
+
+    it("Should not be able to transfer cold potato", async function () {
+      hotPotato = await HotPotato.deploy();
+      await hotPotato.safeMint(owner.address);
+      expect(await hotPotato.isHot(0)).to.true;
+
+      await increaseEvmTime(3600 * 24);
+      expect(await hotPotato.isHot(0)).to.false;
+
+      await expect(
+        hotPotato.transferFrom(owner.address, addr1.address, 0)
+      ).to.be.revertedWith("Cannot transfer cold potato");
     });
   });
 });
