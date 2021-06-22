@@ -30,4 +30,7 @@ contract HotPotato is ERC721 {
         _lastPassed[tokenId] = block.timestamp;
         super._beforeTokenTransfer(from, to, tokenId);
     }
+
+    // TODO: set a proper token URI.
+    // TODO: add a burn method.
 }
