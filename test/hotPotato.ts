@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers, network } from "hardhat";
-import { Contract, ContractFactory } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
+import { HotPotato, HotPotato__factory } from "../typechain";
 
 async function increaseEvmTime(seconds: number) {
   await network.provider.send("evm_increaseTime", [seconds]);
@@ -9,15 +9,17 @@ async function increaseEvmTime(seconds: number) {
 }
 
 describe("HotPotato contract", function () {
-  let HotPotato: ContractFactory;
-  let hotPotato: Contract;
+  let hotPotatoFactory: HotPotato__factory;
+  let hotPotato: HotPotato;
   let owner: SignerWithAddress;
   let addr1: SignerWithAddress;
   let addr2: SignerWithAddress;
 
   beforeEach(async function () {
-    HotPotato = await ethers.getContractFactory("HotPotato");
-    hotPotato = await HotPotato.deploy();
+    hotPotatoFactory = (await ethers.getContractFactory(
+      "HotPotato"
+    )) as HotPotato__factory;
+    hotPotato = await hotPotatoFactory.deploy();
     [owner, addr1, addr2] = await ethers.getSigners();
   });
 
@@ -28,7 +30,7 @@ describe("HotPotato contract", function () {
     });
 
     it("Should mint with auto-incremented id", async function () {
-      hotPotato = await HotPotato.deploy();
+      hotPotato = await hotPotatoFactory.deploy();
 
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.ownerOf(0)).to.equal(owner.address);
@@ -42,13 +44,13 @@ describe("HotPotato contract", function () {
 
   describe("HotPotato Logic", function () {
     it("Minted potato should be hot", async function () {
-      hotPotato = await HotPotato.deploy();
+      hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
     });
 
     it("Potato is still hot after 23 hours", async function () {
-      hotPotato = await HotPotato.deploy();
+      hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
 
@@ -58,7 +60,7 @@ describe("HotPotato contract", function () {
     });
 
     it("Potato becomes cold after 1 day", async function () {
-      hotPotato = await HotPotato.deploy();
+      hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
 
@@ -68,7 +70,7 @@ describe("HotPotato contract", function () {
     });
 
     it("Should be able to transfer hot potato", async function () {
-      hotPotato = await HotPotato.deploy();
+      hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
 
@@ -77,7 +79,7 @@ describe("HotPotato contract", function () {
     });
 
     it("Hotness timer gets reset upon transfer", async function () {
-      hotPotato = await HotPotato.deploy();
+      hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
 
@@ -91,7 +93,7 @@ describe("HotPotato contract", function () {
     });
 
     it("Should not be able to transfer cold potato", async function () {
-      hotPotato = await HotPotato.deploy();
+      hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
 
