@@ -44,7 +44,7 @@ const Minter: React.FC = () => {
   );
 
   return (
-    <div className="flex my-3 w-screen">
+    <div className="flex my-3">
       {status === "complete" && <MintConfetti />}
       <form className="mx-auto">
         <label className="font-semibold">{"Mint & Send 🥔 To:"}</label>
