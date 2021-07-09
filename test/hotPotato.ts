@@ -8,6 +8,10 @@ async function increaseEvmTime(seconds: number) {
   await network.provider.send("evm_mine");
 }
 
+async function setNextBlockTimestamp(timestamp: number) {
+  await network.provider.send("evm_setNextBlockTimestamp", [timestamp]);
+}
+
 describe("HotPotato contract", function () {
   let hotPotatoFactory: HotPotato__factory;
   let hotPotato: HotPotato;
@@ -42,14 +46,38 @@ describe("HotPotato contract", function () {
     });
   });
 
-  describe("HotPotato Logic", function () {
-    it("Minted potato should be hot", async function () {
+  describe("HotPotato - bake", function () {
+    it("Should not be able to transfer if not owner", async function () {
+      hotPotato = await hotPotatoFactory.deploy();
+      await hotPotato.safeMint(owner.address);
+
+      await expect(hotPotato.connect(addr1).bake(0)).to.be.revertedWith(
+        "bake caller is not owner"
+      );
+    });
+
+    it("Should update lastToss after bake", async function () {
+      hotPotato = await hotPotatoFactory.deploy();
+
+      const now = Date.now();
+      setNextBlockTimestamp(now + 420);
+      await hotPotato.safeMint(owner.address);
+      expect(await hotPotato.lastTossed(0)).to.equal(now + 420);
+
+      setNextBlockTimestamp(now + 840);
+      await hotPotato.bake(0);
+      expect(await hotPotato.lastTossed(0)).to.equal(now + 840);
+    });
+  });
+
+  describe("HotPotato - Hot/Cold Logic", function () {
+    it("Should be hot after mint", async function () {
       hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
     });
 
-    it("Potato is still hot after 23 hours", async function () {
+    it("Should be still hot after 23 hours", async function () {
       hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;
@@ -59,7 +87,7 @@ describe("HotPotato contract", function () {
       expect(await hotPotato.isHot(0)).to.true;
     });
 
-    it("Potato becomes cold after 1 day", async function () {
+    it("Should become cold after 1 day", async function () {
       hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address);
       expect(await hotPotato.isHot(0)).to.true;

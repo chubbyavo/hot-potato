@@ -10,20 +10,28 @@ contract HotPotato is ERC721, ERC721Enumerable {
 
   uint256 private constant _HOT_DURATION = 1 days;
   Counters.Counter private _tokenIdCounter;
-  mapping(uint256 => uint256) private _lastTossed;
+
+  mapping(uint256 => uint256) public lastTossed;
 
   constructor() ERC721("HotPotato", "HOT") {}
 
+  // TODO: add mint fee.
   function safeMint(address to) public {
-    _lastTossed[_tokenIdCounter.current()] = block.timestamp;
+    lastTossed[_tokenIdCounter.current()] = block.timestamp;
     _safeMint(to, _tokenIdCounter.current());
     _tokenIdCounter.increment();
   }
 
   function isHot(uint256 tokenId) public view returns (bool) {
-    uint256 lastTossed = _lastTossed[tokenId];
-    require(lastTossed != 0, "isHot query for nonexistent token");
-    return (block.timestamp - lastTossed) < _HOT_DURATION;
+    require(lastTossed[tokenId] != 0, "isHot query for nonexistent token");
+    return (block.timestamp - lastTossed[tokenId]) < _HOT_DURATION;
+  }
+
+  // TODO: add fee
+  function bake(uint256 tokenId) public {
+    address owner = ERC721.ownerOf(tokenId);
+    require(_msgSender() == owner, "bake caller is not owner");
+    lastTossed[tokenId] = block.timestamp;
   }
 
   function _beforeTokenTransfer(
@@ -32,7 +40,7 @@ contract HotPotato is ERC721, ERC721Enumerable {
     uint256 tokenId
   ) internal override(ERC721, ERC721Enumerable) {
     require(isHot(tokenId), "Cannot transfer cold potato");
-    _lastTossed[tokenId] = block.timestamp;
+    lastTossed[tokenId] = block.timestamp;
     super._beforeTokenTransfer(from, to, tokenId);
   }
 
