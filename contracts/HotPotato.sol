@@ -1,11 +1,12 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.4;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract HotPotato is ERC721, ERC721Enumerable {
+contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
 
   uint256 private constant _HOT_DURATION = 1 days;
@@ -41,6 +42,11 @@ contract HotPotato is ERC721, ERC721Enumerable {
     require(msg.value == _BURN_FEE, "Incorrect burn fee");
     _burn(tokenId);
     lastTossed[tokenId] = 0;
+  }
+
+  function withdrawFees() public onlyOwner {
+    (bool sent, ) = msg.sender.call{value: address(this).balance}("");
+    require(sent, "Failed to send collected fees");
   }
 
   function _beforeTokenTransfer(

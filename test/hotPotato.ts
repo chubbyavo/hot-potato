@@ -105,6 +105,31 @@ describe("HotPotato contract", function () {
     });
   });
 
+  describe("HotPotato - withdrawFees", function () {
+    it("Should withdraw accumulated fees", async function () {
+      hotPotato = await hotPotatoFactory.deploy();
+      await hotPotato.safeMint(owner.address);
+      await hotPotato.safeMint(owner.address);
+      await hotPotato.burn(0, { value: BURN_FEE });
+      await hotPotato.burn(1, { value: BURN_FEE });
+
+      expect(await hotPotato.withdrawFees()).to.changeEtherBalance(
+        owner,
+        BURN_FEE.mul(2)
+      );
+    });
+
+    it("Should not be able to withdraw if not owner", async function () {
+      hotPotato = await hotPotatoFactory.deploy();
+      await hotPotato.safeMint(owner.address);
+      await hotPotato.burn(0, { value: BURN_FEE });
+
+      await expect(hotPotato.connect(addr1).withdrawFees()).to.be.revertedWith(
+        "Ownable: caller is not the owner"
+      );
+    });
+  });
+
   describe("HotPotato - Hot/Cold Logic", function () {
     it("Should be hot after mint", async function () {
       hotPotato = await hotPotatoFactory.deploy();
