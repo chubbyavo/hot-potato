@@ -9,6 +9,7 @@ contract HotPotato is ERC721, ERC721Enumerable {
   using Counters for Counters.Counter;
 
   uint256 private constant _HOT_DURATION = 1 days;
+  uint256 private constant _BURN_FEE = 0.00001 ether;
   Counters.Counter private _tokenIdCounter;
 
   mapping(uint256 => uint256) public lastTossed;
@@ -32,6 +33,14 @@ contract HotPotato is ERC721, ERC721Enumerable {
     address owner = ERC721.ownerOf(tokenId);
     require(_msgSender() == owner, "bake caller is not owner");
     lastTossed[tokenId] = block.timestamp;
+  }
+
+  function burn(uint256 tokenId) public payable {
+    address owner = ERC721.ownerOf(tokenId);
+    require(_msgSender() == owner, "burn caller is not owner");
+    require(msg.value == _BURN_FEE, "Incorrect burn fee");
+    _burn(tokenId);
+    lastTossed[tokenId] = 0;
   }
 
   function _beforeTokenTransfer(
