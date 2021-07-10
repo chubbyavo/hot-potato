@@ -30,8 +30,13 @@ const Minter: React.FC = () => {
     }
 
     setStatus("mint");
-    const tx = await hotPotato.safeMint(toAddress);
-    await tx.wait();
+    try {
+      const tx = await hotPotato.safeMint(toAddress);
+      await tx.wait();
+    } catch {
+      setStatus("idle");
+      return;
+    }
     setStatus("complete");
     setTimeout(() => setStatus("idle"), 15000);
   };
