@@ -4,6 +4,8 @@ import useHotPotato from "../hooks/useHotPotato";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
 
+const MINT_COST = ethers.utils.parseEther("0.00001");
+
 const MintConfetti: React.FC = () => {
   const { width, height } = useWindowSize();
   return <Confetti width={width} height={height} />;
@@ -31,9 +33,16 @@ const Minter: React.FC = () => {
 
     setStatus("mint");
     try {
-      const tx = await hotPotato.safeMint(toAddress);
+      const gasLimit = await hotPotato.estimateGas.safeMint(toAddress, {
+        value: MINT_COST,
+      });
+      const tx = await hotPotato.safeMint(toAddress, {
+        value: MINT_COST,
+        gasLimit: gasLimit,
+      });
       await tx.wait();
-    } catch {
+    } catch (error) {
+      // TODO: surface error
       setStatus("idle");
       return;
     }

@@ -44,20 +44,17 @@ const PotatoBag: React.FC = () => {
 
   useEffect(() => {
     const fetchPotatoes = async (address: string) => {
-      console.log("Fetching potato data");
       if (hotPotato === null || !ethers.utils.isAddress(address)) {
         return [];
       }
 
       const potatoes: Potato[] = [];
       const balance = await hotPotato.balanceOf(address);
-      console.log("balance: " + balance.toNumber());
       for (let i = 0; i < balance.toNumber(); i++) {
         const tokenId = await hotPotato.tokenOfOwnerByIndex(address, i);
         const isHot = await hotPotato.isHot(tokenId);
         potatoes.push({ id: tokenId.toNumber(), isHot });
       }
-      console.log(potatoes);
       setPotatoes(potatoes);
     };
 
