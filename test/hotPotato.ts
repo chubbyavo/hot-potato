@@ -4,6 +4,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { HotPotato, HotPotato__factory } from "../typechain";
 
 const MINT_FEE = ethers.utils.parseEther("0.00001");
+const BAKE_FEE = ethers.utils.parseEther("0.00001");
 const BURN_FEE = ethers.utils.parseEther("0.00001");
 
 async function increaseEvmTime(seconds: number) {
@@ -60,13 +61,22 @@ describe("HotPotato contract", function () {
   });
 
   describe("HotPotato - bake", function () {
-    it("Should not be able to transfer if not owner", async function () {
+    it("Should not be able to bake if not owner", async function () {
       hotPotato = await hotPotatoFactory.deploy();
       await hotPotato.safeMint(owner.address, { value: MINT_FEE });
 
-      await expect(hotPotato.connect(addr1).bake(0)).to.be.revertedWith(
-        "bake caller is not owner"
-      );
+      await expect(
+        hotPotato.connect(addr1).bake(0, { value: BAKE_FEE })
+      ).to.be.revertedWith("bake caller is not owner");
+    });
+
+    it("Should not be able to bake without correct fee", async function () {
+      hotPotato = await hotPotatoFactory.deploy();
+      await hotPotato.safeMint(owner.address, { value: MINT_FEE });
+
+      await expect(
+        hotPotato.bake(0, { value: BAKE_FEE.sub(1) })
+      ).to.be.revertedWith("Incorrect bake fee");
     });
 
     it("Should update lastToss after bake", async function () {
@@ -78,7 +88,7 @@ describe("HotPotato contract", function () {
       expect(await hotPotato.lastTossed(0)).to.equal(now + 420);
 
       setNextBlockTimestamp(now + 840);
-      await hotPotato.bake(0);
+      await hotPotato.bake(0, { value: BAKE_FEE });
       expect(await hotPotato.lastTossed(0)).to.equal(now + 840);
     });
   });

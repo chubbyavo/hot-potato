@@ -11,6 +11,7 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
 
   uint256 private constant _HOT_DURATION = 1 days;
   uint256 private constant _MINT_FEE = 0.00001 ether;
+  uint256 private constant _BAKE_FEE = 0.00001 ether;
   uint256 private constant _BURN_FEE = 0.00001 ether;
   Counters.Counter private _tokenIdCounter;
 
@@ -30,8 +31,8 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
     return (block.timestamp - lastTossed[tokenId]) < _HOT_DURATION;
   }
 
-  // TODO: add fee
-  function bake(uint256 tokenId) public {
+  function bake(uint256 tokenId) public payable {
+    require(msg.value == _BAKE_FEE, "Incorrect bake fee");
     address owner = ERC721.ownerOf(tokenId);
     require(_msgSender() == owner, "bake caller is not owner");
     lastTossed[tokenId] = block.timestamp;
