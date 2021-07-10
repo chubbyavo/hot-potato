@@ -10,6 +10,7 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
 
   uint256 private constant _HOT_DURATION = 1 days;
+  uint256 private constant _MINT_FEE = 0.00001 ether;
   uint256 private constant _BURN_FEE = 0.00001 ether;
   Counters.Counter private _tokenIdCounter;
 
@@ -17,8 +18,8 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
 
   constructor() ERC721("HotPotato", "HOT") {}
 
-  // TODO: add mint fee.
-  function safeMint(address to) public {
+  function safeMint(address to) public payable {
+    require(msg.value == _MINT_FEE, "Incorrect mint fee");
     lastTossed[_tokenIdCounter.current()] = block.timestamp;
     _safeMint(to, _tokenIdCounter.current());
     _tokenIdCounter.increment();
