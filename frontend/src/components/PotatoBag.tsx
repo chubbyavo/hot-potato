@@ -7,32 +7,55 @@ import { useEffect } from "react";
 interface Potato {
   id: number;
   isHot: boolean;
+  lastTossed: number;
 }
 
-interface PotatoTableProps {
-  potatoes: Potato[];
-}
+const TempPotatoImage = () => (
+  <svg height="200" width="200" className="rounded-lg">
+    <rect width="100%" height="100%" fill="dimgray" />
+    <circle
+      cx="100"
+      cy="100"
+      r="90"
+      stroke="black"
+      strokeWidth="3"
+      fill="goldenrod"
+    />
+  </svg>
+);
 
-const PotatoTable: React.FC<PotatoTableProps> = ({
-  potatoes,
-}: PotatoTableProps) => {
-  const rows = potatoes.map(({ id, isHot }) => (
-    <tr key={id}>
-      <td>{id}</td>
-      <td>{isHot ? "🔥" : "❄️"}️</td>
-    </tr>
-  ));
-
+const PotatoCard: React.FC = () => {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Token ID</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
+    <div className="p-4 border-2 border-black rounded-md space-y-4">
+      <div className="w-min mx-auto">
+        <TempPotatoImage />
+      </div>
+      <div>
+        <p>Token ID: 1</p>
+        <p>Status: ❄️</p>
+        <p>From: 0xabc️</p>
+      </div>
+      <div className="flex justify-center">
+        <button
+          type="button"
+          className="w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
+        >
+          Toss ☄
+        </button>
+        <button
+          type="button"
+          className="w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
+        >
+          Bake ⏲
+        </button>
+        <button
+          type="button"
+          className="w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
+        >
+          Burn 🔥
+        </button>
+      </div>
+    </div>
   );
 };
 
@@ -53,7 +76,13 @@ const PotatoBag: React.FC = () => {
       for (let i = 0; i < balance.toNumber(); i++) {
         const tokenId = await hotPotato.tokenOfOwnerByIndex(address, i);
         const isHot = await hotPotato.isHot(tokenId);
-        potatoes.push({ id: tokenId.toNumber(), isHot });
+        const lastTossed = await hotPotato.lastTossed(tokenId);
+
+        potatoes.push({
+          id: tokenId.toNumber(),
+          isHot,
+          lastTossed: lastTossed.toNumber(),
+        });
       }
       setPotatoes(potatoes);
     };
@@ -64,10 +93,12 @@ const PotatoBag: React.FC = () => {
   }, [account, hotPotato]);
 
   return (
-    <div>
+    <div className="space-y-4">
       <h2 className="text-center">Your 🥔s:</h2>
-      <div className="flex justify-center">
-        <PotatoTable potatoes={potatoes} />
+      <div className="md:w-3/4 xl:w-2/3 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
+        <PotatoCard />
+        <PotatoCard />
+        <PotatoCard />
       </div>
     </div>
   );

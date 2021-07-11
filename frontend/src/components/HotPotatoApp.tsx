@@ -12,8 +12,10 @@ const HotPotatoApp: React.FC = () => {
         <Switch>
           <Route path="/about">TODO: about page</Route>
           <Route path="/mint">
-            <Minter />
-            <PotatoBag />
+            <div className="mx-4">
+              <Minter />
+              <PotatoBag />
+            </div>
           </Route>
         </Switch>
       </div>
