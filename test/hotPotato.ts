@@ -102,7 +102,9 @@ describe("HotPotato contract", function () {
       expect(await hotPotato.lastTossed(0)).to.equal(now + 420);
 
       setNextBlockTimestamp(now + 840);
-      await hotPotato.bake(0, { value: BAKE_FEE });
+      await expect(hotPotato.bake(0, { value: BAKE_FEE }))
+        .to.emit(hotPotato, "Bake")
+        .withArgs(owner.address, 0);
       expect(await hotPotato.lastTossed(0)).to.equal(now + 840);
     });
   });
@@ -131,7 +133,9 @@ describe("HotPotato contract", function () {
       expect(await hotPotato.balanceOf(owner.address)).to.equal(2);
       expect(await hotPotato.totalSupply()).to.equal(2);
 
-      await hotPotato.burn(0, { value: BURN_FEE });
+      await expect(hotPotato.burn(0, { value: BURN_FEE }))
+        .to.emit(hotPotato, "Burn")
+        .withArgs(owner.address, 0);
 
       expect(await hotPotato.balanceOf(owner.address)).to.equal(1);
       expect(await hotPotato.lastTossed(0)).to.equal(0);

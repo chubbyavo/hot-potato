@@ -9,6 +9,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
 
+  event Bake(address indexed owner, uint256 indexed tokenId);
+  event Burn(address indexed owner, uint256 indexed tokenId);
+
   uint256 private constant _HOT_DURATION = 1 days;
   Counters.Counter private _tokenIdCounter;
 
@@ -52,6 +55,7 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
     address owner = ERC721.ownerOf(tokenId);
     require(_msgSender() == owner, "bake caller is not owner");
     lastTossed[tokenId] = block.timestamp;
+    emit Bake(owner, tokenId);
   }
 
   function burn(uint256 tokenId) public payable {
@@ -60,6 +64,7 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
     require(msg.value == burnFee, "Incorrect burn fee");
     _burn(tokenId);
     lastTossed[tokenId] = 0;
+    emit Burn(owner, tokenId);
   }
 
   function withdrawFees() public onlyOwner {
