@@ -12,7 +12,7 @@ const HotPotatoApp: React.FC = () => {
         <Switch>
           <Route path="/about">TODO: about page</Route>
           <Route path="/mint">
-            <div className="mx-4">
+            <div className="container mx-auto">
               <Minter />
               <PotatoBag />
             </div>

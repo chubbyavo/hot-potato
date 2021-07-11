@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import useHotPotato from "../hooks/useHotPotato";
-import { useEffect } from "react";
 
 interface Potato {
   id: number;
@@ -24,15 +24,20 @@ const TempPotatoImage = () => (
   </svg>
 );
 
-const PotatoCard: React.FC = () => {
+interface PotatoCardProps {
+  id: number;
+  isHot: boolean;
+}
+
+const PotatoCard: React.FC<PotatoCardProps> = ({ id, isHot }) => {
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
         <TempPotatoImage />
       </div>
       <div>
-        <p>Token ID: 1</p>
-        <p>Status: ❄️</p>
+        <p>Token ID: {id}</p>
+        <p>Status:{isHot ? "🔥" : "❄"} ️</p>
         <p>From: 0xabc️</p>
       </div>
       <div className="flex justify-center">
@@ -57,6 +62,15 @@ const PotatoCard: React.FC = () => {
       </div>
     </div>
   );
+};
+
+PotatoCard.propTypes = {
+  id: PropTypes.number.isRequired,
+  isHot: PropTypes.bool.isRequired,
+};
+
+const makePotatoCards = (potatoes: Potato[]) => {
+  return potatoes.map((potato) => <PotatoCard key={potato.id} {...potato} />);
 };
 
 const PotatoBag: React.FC = () => {
@@ -96,9 +110,7 @@ const PotatoBag: React.FC = () => {
     <div className="space-y-4">
       <h2 className="text-center">Your 🥔s:</h2>
       <div className="md:w-3/4 xl:w-2/3 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
-        <PotatoCard />
-        <PotatoCard />
-        <PotatoCard />
+        {makePotatoCards(potatoes)}
       </div>
     </div>
   );
