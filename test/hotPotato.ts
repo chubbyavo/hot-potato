@@ -60,6 +60,20 @@ describe("HotPotato contract", function () {
     });
   });
 
+  it("Should emit events", async function () {
+    hotPotato = await hotPotatoFactory.deploy();
+
+    await expect(hotPotato.safeMint(owner.address, { value: MINT_FEE }))
+      .to.emit(hotPotato, "Transfer")
+      .withArgs(ethers.constants.AddressZero, owner.address, 0);
+
+    await expect(
+      hotPotato.connect(addr1).safeMint(addr2.address, { value: MINT_FEE })
+    )
+      .to.emit(hotPotato, "Transfer")
+      .withArgs(addr1.address, addr2.address, 1);
+  });
+
   describe("HotPotato - bake", function () {
     it("Should not be able to bake if not owner", async function () {
       hotPotato = await hotPotatoFactory.deploy();

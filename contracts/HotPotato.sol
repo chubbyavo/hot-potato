@@ -30,9 +30,15 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   }
 
   function safeMint(address to) public payable {
-    require(msg.value == _MINT_FEE, "Incorrect mint fee");
-    lastTossed[_tokenIdCounter.current()] = block.timestamp;
-    _safeMint(to, _tokenIdCounter.current());
+    require(msg.value == mintFee, "Incorrect mint fee");
+    uint256 tokenId = _tokenIdCounter.current();
+    lastTossed[tokenId] = block.timestamp;
+    _safeMint(_msgSender(), tokenId);
+
+    // Immediately toss to `address` if it's different from the minter.
+    if (_msgSender() != to) {
+      _transfer(_msgSender(), to, tokenId);
+    }
     _tokenIdCounter.increment();
   }
 
