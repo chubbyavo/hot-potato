@@ -10,14 +10,24 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
 
   uint256 private constant _HOT_DURATION = 1 days;
-  uint256 private constant _MINT_FEE = 0.00001 ether;
-  uint256 private constant _BAKE_FEE = 0.00001 ether;
-  uint256 private constant _BURN_FEE = 0.00001 ether;
   Counters.Counter private _tokenIdCounter;
 
   mapping(uint256 => uint256) public lastTossed;
+  uint256 public mintFee = 0.00001 ether;
+  uint256 public bakeFee = 0.00001 ether;
+  uint256 public burnFee = 0.00001 ether;
 
   constructor() ERC721("HotPotato", "HOT") {}
+
+  function setFees(
+    uint256 _mintFee,
+    uint256 _bakeFee,
+    uint256 _burnFee
+  ) public onlyOwner {
+    mintFee = _mintFee;
+    bakeFee = _bakeFee;
+    burnFee = _burnFee;
+  }
 
   function safeMint(address to) public payable {
     require(msg.value == _MINT_FEE, "Incorrect mint fee");
@@ -32,7 +42,7 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   }
 
   function bake(uint256 tokenId) public payable {
-    require(msg.value == _BAKE_FEE, "Incorrect bake fee");
+    require(msg.value == bakeFee, "Incorrect bake fee");
     address owner = ERC721.ownerOf(tokenId);
     require(_msgSender() == owner, "bake caller is not owner");
     lastTossed[tokenId] = block.timestamp;
@@ -41,7 +51,7 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   function burn(uint256 tokenId) public payable {
     address owner = ERC721.ownerOf(tokenId);
     require(_msgSender() == owner, "burn caller is not owner");
-    require(msg.value == _BURN_FEE, "Incorrect burn fee");
+    require(msg.value == burnFee, "Incorrect burn fee");
     _burn(tokenId);
     lastTossed[tokenId] = 0;
   }
@@ -66,5 +76,4 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   }
 
   // TODO: set a proper token URI.
-  // TODO: add a burn method.
 }
