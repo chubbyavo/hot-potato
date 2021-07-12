@@ -38,6 +38,13 @@ interface ButtonProps extends PotatoCardProps {
   baseClassName: string;
 }
 
+const buttonPropTypes = {
+  hotPotato: PropTypes.any.isRequired,
+  id: PropTypes.number.isRequired,
+  isHot: PropTypes.bool.isRequired,
+  baseClassName: PropTypes.string.isRequired,
+};
+
 const BakeButton: React.FC<ButtonProps> = ({
   hotPotato,
   id,
@@ -51,7 +58,7 @@ const BakeButton: React.FC<ButtonProps> = ({
       return;
     }
 
-    setBakeStatus("bake");
+    setBakeStatus("baking");
     try {
       const bakeFee = await hotPotato.bakeFee();
 
@@ -80,17 +87,55 @@ const BakeButton: React.FC<ButtonProps> = ({
       className={baseClassName + (isHot ? " cursor-not-allowed" : "")}
       onClick={bake}
     >
-      {bakeStatus == "bake" ? bakeSpinner : "Bake ⏲"}
+      {bakeStatus == "baking" ? bakeSpinner : "Bake ⏲"}
     </button>
   );
 };
 
-BakeButton.propTypes = {
-  hotPotato: PropTypes.any.isRequired,
-  id: PropTypes.number.isRequired,
-  isHot: PropTypes.bool.isRequired,
-  baseClassName: PropTypes.string.isRequired,
+BakeButton.propTypes = buttonPropTypes;
+
+const BurnButton: React.FC<ButtonProps> = ({
+  hotPotato,
+  id,
+  baseClassName,
+}) => {
+  const [burnStatus, setBurnStatus] = useState("idle");
+
+  const burn = async () => {
+    if (hotPotato === null) {
+      return;
+    }
+    setBurnStatus("burning");
+    try {
+      const burnFee = await hotPotato.burnFee();
+
+      const tx = await hotPotato.burn(id, {
+        value: burnFee,
+        gasLimit: 100000,
+      });
+      await tx.wait();
+      setBurnStatus("complete");
+      setTimeout(() => setBurnStatus("idle"), 5000);
+    } catch (error) {
+      setBurnStatus("idle");
+    }
+  };
+
+  const burnSpinner = (
+    <div className="flex">
+      Burning
+      <div className="animate-bounce ml-1">🔥</div>
+    </div>
+  );
+
+  return (
+    <button type="button" className={baseClassName} onClick={burn}>
+      {burnStatus === "burning" ? burnSpinner : "Burn 🔥"}
+    </button>
+  );
 };
+
+BurnButton.propTypes = buttonPropTypes;
 
 const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
   const buttonBaseClass =
@@ -118,12 +163,12 @@ const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
           isHot={isHot}
           baseClassName={buttonBaseClass}
         />
-        <button
-          type="button"
-          className="w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
-        >
-          Burn 🔥
-        </button>
+        <BurnButton
+          hotPotato={hotPotato}
+          id={id}
+          isHot={isHot}
+          baseClassName={buttonBaseClass}
+        />
       </div>
     </div>
   );
