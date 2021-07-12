@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import useHotPotato from "../hooks/useHotPotato";
+import { HotPotato } from "../typechain";
 
 interface Potato {
   id: number;
@@ -21,15 +22,79 @@ const TempPotatoImage = () => (
       strokeWidth="3"
       fill="goldenrod"
     />
+    <text x="63" y="100">
+      Placeholder
+    </text>
   </svg>
 );
 
 interface PotatoCardProps {
+  hotPotato: HotPotato | null;
   id: number;
   isHot: boolean;
 }
 
-const PotatoCard: React.FC<PotatoCardProps> = ({ id, isHot }) => {
+interface ButtonProps extends PotatoCardProps {
+  baseClassName: string;
+}
+
+const BakeButton: React.FC<ButtonProps> = ({
+  hotPotato,
+  id,
+  isHot,
+  baseClassName,
+}) => {
+  const [bakeStatus, setBakeStatus] = useState("idle");
+
+  const bake = async () => {
+    if (hotPotato === null) {
+      return;
+    }
+
+    setBakeStatus("bake");
+    try {
+      const bakeFee = await hotPotato.bakeFee();
+
+      const tx = await hotPotato.bake(id, {
+        value: bakeFee,
+        gasLimit: 50000,
+      });
+      await tx.wait();
+      setBakeStatus("complete");
+      setTimeout(() => setBakeStatus("idle"), 5000);
+    } catch (error) {
+      setBakeStatus("idle");
+    }
+  };
+
+  const bakeSpinner = (
+    <div className="flex">
+      Baking
+      <div className="animate-bounce ml-1">⏲</div>
+    </div>
+  );
+
+  return (
+    <button
+      type="button"
+      className={baseClassName + (isHot ? " cursor-not-allowed" : "")}
+      onClick={bake}
+    >
+      {bakeStatus == "bake" ? bakeSpinner : "Bake ⏲"}
+    </button>
+  );
+};
+
+BakeButton.propTypes = {
+  hotPotato: PropTypes.any.isRequired,
+  id: PropTypes.number.isRequired,
+  isHot: PropTypes.bool.isRequired,
+  baseClassName: PropTypes.string.isRequired,
+};
+
+const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
+  const buttonBaseClass =
+    "w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300";
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
@@ -43,16 +108,16 @@ const PotatoCard: React.FC<PotatoCardProps> = ({ id, isHot }) => {
       <div className="flex justify-center">
         <button
           type="button"
-          className="w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
+          className={buttonBaseClass + (isHot ? "" : " cursor-not-allowed")}
         >
           Toss ☄
         </button>
-        <button
-          type="button"
-          className="w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
-        >
-          Bake ⏲
-        </button>
+        <BakeButton
+          hotPotato={hotPotato}
+          id={id}
+          isHot={isHot}
+          baseClassName={buttonBaseClass}
+        />
         <button
           type="button"
           className="w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
@@ -65,12 +130,15 @@ const PotatoCard: React.FC<PotatoCardProps> = ({ id, isHot }) => {
 };
 
 PotatoCard.propTypes = {
+  hotPotato: PropTypes.any.isRequired,
   id: PropTypes.number.isRequired,
   isHot: PropTypes.bool.isRequired,
 };
 
-const makePotatoCards = (potatoes: Potato[]) => {
-  return potatoes.map((potato) => <PotatoCard key={potato.id} {...potato} />);
+const makePotatoCards = (hotPotato: HotPotato | null, potatoes: Potato[]) => {
+  return potatoes.map((potato) => (
+    <PotatoCard key={potato.id} hotPotato={hotPotato} {...potato} />
+  ));
 };
 
 const PotatoBag: React.FC = () => {
@@ -110,7 +178,7 @@ const PotatoBag: React.FC = () => {
     <div className="space-y-4">
       <h2 className="text-center">Your 🥔s:</h2>
       <div className="md:w-3/4 xl:w-2/3 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
-        {makePotatoCards(potatoes)}
+        {makePotatoCards(hotPotato, potatoes)}
       </div>
     </div>
   );
