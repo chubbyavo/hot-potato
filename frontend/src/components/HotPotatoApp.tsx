@@ -17,6 +17,7 @@ const HotPotatoApp: React.FC = () => {
               <PotatoBag />
             </div>
           </Route>
+          <Route path="/">TODO: home</Route>
         </Switch>
       </div>
     </Router>

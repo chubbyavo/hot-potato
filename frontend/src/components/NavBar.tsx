@@ -6,7 +6,9 @@ const NavBar: React.FC = () => {
   return (
     <nav className="flex items-center px-5 py-3 bg-yellow-400 w-screen">
       <div className="flex flex-shrink-0 mr-3">
-        <span className="text-3xl">🥔</span>
+        <Link to="/">
+          <span className="text-3xl">🥔</span>
+        </Link>
       </div>
       <div>
         <ul className="flex flex-grow text-lg font-semibold">
