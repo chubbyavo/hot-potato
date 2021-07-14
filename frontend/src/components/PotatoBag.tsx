@@ -4,6 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import useHotPotato from "../hooks/useHotPotato";
 import { HotPotato } from "../typechain";
+import TossButton from "./TossButton";
 
 interface Potato {
   id: number;
@@ -151,12 +152,12 @@ const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
         <p>From: 0xabc️</p>
       </div>
       <div className="flex justify-center">
-        <button
-          type="button"
-          className={buttonBaseClass + (isHot ? "" : " cursor-not-allowed")}
-        >
-          Toss ☄
-        </button>
+        <TossButton
+          hotPotato={hotPotato}
+          id={id}
+          isHot={isHot}
+          baseClassName={buttonBaseClass}
+        />
         <BakeButton
           hotPotato={hotPotato}
           id={id}
