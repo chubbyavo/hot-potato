@@ -11,7 +11,7 @@ const HotPotatoApp: React.FC = () => {
         <NavBar />
         <Switch>
           <Route path="/about">TODO: about page</Route>
-          <Route path="/mint">
+          <Route path="/app">
             <div className="container mx-auto">
               <Minter />
               <PotatoBag />

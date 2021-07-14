@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { ethers } from "ethers";
 import { HotPotato } from "../typechain";
 import { Dialog, Transition } from "@headlessui/react";
-import { sleep } from "../utils/misc";
 import { useWeb3React } from "@web3-react/core";
 
 interface TossButtonProps {
