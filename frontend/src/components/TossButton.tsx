@@ -67,24 +67,24 @@ const TossButton: React.FC<TossButtonProps> = ({ baseClassName, isHot }) => {
       >
         Toss ☄
       </button>
-      <Transition appear show={isOpen} as={Fragment}>
+      <Transition
+        appear
+        show={isOpen}
+        as={Fragment}
+        enter="ease-out duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="ease-in duration-200"
+        leaveFrom="opacity-30"
+        leaveTo="opacity-0"
+      >
         <Dialog
           as="div"
           className="fixed inset-0 z-10 overflow-y-auto"
           onClose={closeModal}
         >
           <div className="min-h-screen px-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-30"
-              leaveTo="opacity-0"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-            </Transition.Child>
+            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
 
             {/* This element is to trick the browser into centering the modal contents. */}
             <span
@@ -93,56 +93,40 @@ const TossButton: React.FC<TossButtonProps> = ({ baseClassName, isHot }) => {
             >
               &#8203;
             </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <div className="flex">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Tossing 🥔
-                  </Dialog.Title>
+            <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
+              <div className="flex">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-gray-900"
+                >
+                  Tossing unwanted 🥔
+                </Dialog.Title>
+                <button type="button" className="ml-auto" onClick={closeModal}>
+                  <X />
+                </button>
+              </div>
+              <div className="mt-4">
+                <form className="flex max-w-full">
+                  <input
+                    className="flex-grow p-2 border-2 rounded-md border-black"
+                    type="text"
+                    placeholder="0xabcd...1234"
+                    onChange={(event) => setToAddress(event?.target.value)}
+                    required
+                  />
                   <button
                     type="button"
-                    className="ml-auto"
-                    onClick={closeModal}
+                    className="flex-none w-24 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
+                    onClick={toss}
                   >
-                    <X />
+                    {tossStatus == "tossing" ? <TossSpinner /> : "Toss 🥔"}
                   </button>
-                </div>
-                <div className="mt-4">
-                  <form className="flex max-w-full">
-                    <input
-                      className="flex-grow p-2 border-2 rounded-md border-black"
-                      type="text"
-                      placeholder="0xabcd...1234"
-                      onChange={(event) => setToAddress(event?.target.value)}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="flex-none w-24 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
-                      onClick={toss}
-                    >
-                      {tossStatus == "tossing" ? <TossSpinner /> : "Toss 🥔"}
-                    </button>
-                  </form>
-                  {showAddressInputError() && (
-                    <span className="text-xs text-red-600">
-                      Invalid Address
-                    </span>
-                  )}
-                </div>
+                </form>
+                {showAddressInputError() && (
+                  <span className="text-xs text-red-600">Invalid Address</span>
+                )}
               </div>
-            </Transition.Child>
+            </div>
           </div>
         </Dialog>
       </Transition>
