@@ -24,7 +24,7 @@ const TempPotatoImage = () => (
       fill="goldenrod"
     />
     <text x="63" y="100">
-      Placeholder
+      {"I'm a potato"}
     </text>
   </svg>
 );

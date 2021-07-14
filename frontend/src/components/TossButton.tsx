@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { HotPotato } from "../typechain";
 import { Dialog, Transition } from "@headlessui/react";
 import { sleep } from "../utils/misc";
+import { useWeb3React } from "@web3-react/core";
 
 interface TossButtonProps {
   hotPotato: HotPotato | null;
@@ -37,7 +38,13 @@ const TossSpinner: React.FC = () => (
   </div>
 );
 
-const TossButton: React.FC<TossButtonProps> = ({ baseClassName, isHot }) => {
+const TossButton: React.FC<TossButtonProps> = ({
+  hotPotato,
+  id,
+  baseClassName,
+  isHot,
+}) => {
+  const { account } = useWeb3React();
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -46,13 +53,19 @@ const TossButton: React.FC<TossButtonProps> = ({ baseClassName, isHot }) => {
   const [tossStatus, setTossStatus] = useState("idle");
 
   const toss = async () => {
-    // TODO: Implement toss
-    setTossStatus("tossing");
-    await sleep(4000);
+    if (hotPotato === null || !account || !ethers.utils.isAddress(toAddress)) {
+      return;
+    }
 
-    setTossStatus("complete");
-    setTimeout(() => setTossStatus("idle"), 4000);
-    return;
+    setTossStatus("tossing");
+    try {
+      const tx = await hotPotato.transferFrom(account, toAddress, id);
+      await tx.wait();
+      setTossStatus("complete");
+      setTimeout(() => setTossStatus("idle"), 4000);
+    } catch (error) {
+      setTossStatus("idle");
+    }
   };
 
   const showAddressInputError = () =>
