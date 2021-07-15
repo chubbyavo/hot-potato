@@ -89,6 +89,7 @@ const BakeButton: React.FC<ButtonProps> = ({
     <button
       type="button"
       className={baseClassName + (isHot ? " cursor-not-allowed" : "")}
+      disabled={isHot}
       onClick={bake}
     >
       {bakeStatus == "baking" ? bakeSpinner : "Bake ⏲"}

@@ -76,7 +76,10 @@ const TossButton: React.FC<TossButtonProps> = ({
     <div>
       <button
         type="button"
-        className={baseClassName + (isHot ? "" : " cursor-not-allowed")}
+        className={
+          baseClassName + (isHot ? "" : " cursor-not-allowed disabled")
+        }
+        disabled={!isHot}
         onClick={openModal}
       >
         Toss ☄
