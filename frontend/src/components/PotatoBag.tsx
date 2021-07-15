@@ -192,7 +192,7 @@ const makePotatoCards = (hotPotato: HotPotato | null, potatoes: Potato[]) => {
 };
 
 const PotatoBag: React.FC = () => {
-  const { account } = useWeb3React();
+  const { account, active } = useWeb3React();
   const hotPotato = useHotPotato();
 
   const [potatoes, setPotatoes] = useState<Potato[]>([]);
@@ -228,6 +228,11 @@ const PotatoBag: React.FC = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-center">Your 🥔s:</h2>
+      <div className="text-center">
+        {potatoes.length === 0 &&
+          active &&
+          "🎉 Yay, you don't have any potatoes! (that's a good thing!!?)"}
+      </div>
       <div className="md:w-3/4 xl:w-2/3 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
         {makePotatoCards(hotPotato, potatoes)}
       </div>
