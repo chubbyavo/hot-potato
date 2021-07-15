@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import useHotPotato from "../hooks/useHotPotato";
 import { useWindowSize } from "react-use";
 import Confetti from "react-confetti";
+import { RefreshContext } from "../contexts/RefreshContext";
 
 const MintConfetti: React.FC = () => {
   const { width, height } = useWindowSize();
@@ -15,6 +16,7 @@ const Minter: React.FC = () => {
   const [toAddress, setToAddress] = useState("");
   const [status, setStatus] = useState("idle");
   const [isValidAddress, setIsValidAddress] = useState(false);
+  const { triggerRefresh } = useContext(RefreshContext);
 
   const showAddressInputError = () => !isValidAddress && toAddress !== "";
 
@@ -40,13 +42,13 @@ const Minter: React.FC = () => {
         gasLimit: gasLimit,
       });
       await tx.wait();
+      triggerRefresh();
+      setStatus("complete");
+      setTimeout(() => setStatus("idle"), 15000);
     } catch (error) {
       // TODO: surface error
       setStatus("idle");
-      return;
     }
-    setStatus("complete");
-    setTimeout(() => setStatus("idle"), 15000);
   };
 
   const mintingSpinner = (

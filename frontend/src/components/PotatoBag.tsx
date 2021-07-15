@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import useHotPotato from "../hooks/useHotPotato";
 import { HotPotato } from "../typechain";
 import TossButton from "./TossButton";
+import { RefreshContext } from "../contexts/RefreshContext";
 
 interface Potato {
   id: number;
@@ -53,6 +54,7 @@ const BakeButton: React.FC<ButtonProps> = ({
   baseClassName,
 }) => {
   const [bakeStatus, setBakeStatus] = useState("idle");
+  const { triggerRefresh } = useContext(RefreshContext);
 
   const bake = async () => {
     if (hotPotato === null) {
@@ -68,6 +70,7 @@ const BakeButton: React.FC<ButtonProps> = ({
         gasLimit: 50000,
       });
       await tx.wait();
+      triggerRefresh();
       setBakeStatus("complete");
       setTimeout(() => setBakeStatus("idle"), 5000);
     } catch (error) {
@@ -101,6 +104,7 @@ const BurnButton: React.FC<ButtonProps> = ({
   baseClassName,
 }) => {
   const [burnStatus, setBurnStatus] = useState("idle");
+  const { triggerRefresh } = useContext(RefreshContext);
 
   const burn = async () => {
     if (hotPotato === null) {
@@ -115,8 +119,8 @@ const BurnButton: React.FC<ButtonProps> = ({
         gasLimit: 100000,
       });
       await tx.wait();
+      triggerRefresh();
       setBurnStatus("complete");
-      setTimeout(() => setBurnStatus("idle"), 5000);
     } catch (error) {
       setBurnStatus("idle");
     }
@@ -192,6 +196,7 @@ const PotatoBag: React.FC = () => {
   const hotPotato = useHotPotato();
 
   const [potatoes, setPotatoes] = useState<Potato[]>([]);
+  const { refresh } = useContext(RefreshContext);
 
   useEffect(() => {
     const fetchPotatoes = async (address: string) => {
@@ -218,7 +223,7 @@ const PotatoBag: React.FC = () => {
     if (account) {
       fetchPotatoes(account);
     }
-  }, [account, hotPotato]);
+  }, [account, hotPotato, refresh]);
 
   return (
     <div className="space-y-4">

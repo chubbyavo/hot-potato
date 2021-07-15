@@ -1,9 +1,10 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, useContext, Fragment } from "react";
 import PropTypes from "prop-types";
 import { ethers } from "ethers";
 import { HotPotato } from "../typechain";
 import { Dialog, Transition } from "@headlessui/react";
 import { useWeb3React } from "@web3-react/core";
+import { RefreshContext } from "../contexts/RefreshContext";
 
 interface TossButtonProps {
   hotPotato: HotPotato | null;
@@ -50,6 +51,7 @@ const TossButton: React.FC<TossButtonProps> = ({
 
   const [toAddress, setToAddress] = useState("");
   const [tossStatus, setTossStatus] = useState("idle");
+  const { triggerRefresh } = useContext(RefreshContext);
 
   const toss = async () => {
     if (hotPotato === null || !account || !ethers.utils.isAddress(toAddress)) {
@@ -61,7 +63,7 @@ const TossButton: React.FC<TossButtonProps> = ({
       const tx = await hotPotato.transferFrom(account, toAddress, id);
       await tx.wait();
       setTossStatus("complete");
-      setTimeout(() => setTossStatus("idle"), 4000);
+      triggerRefresh();
     } catch (error) {
       setTossStatus("idle");
     }

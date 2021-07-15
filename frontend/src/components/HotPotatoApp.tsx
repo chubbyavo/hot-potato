@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import MainDApp from "./MainDApp";
 import NavBar from "./NavBar";
-import Minter from "./Minter";
-import PotatoBag from "./PotatoBag";
 
 const HotPotatoApp: React.FC = () => {
   return (
@@ -12,10 +11,7 @@ const HotPotatoApp: React.FC = () => {
         <Switch>
           <Route path="/about">TODO: about page</Route>
           <Route path="/app">
-            <div className="container mx-auto">
-              <Minter />
-              <PotatoBag />
-            </div>
+            <MainDApp />
           </Route>
           <Route path="/">TODO: home</Route>
         </Switch>
