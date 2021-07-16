@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./Home";
 import MainDApp from "./MainDApp";
 import NavBar from "./NavBar";
 
@@ -13,7 +14,9 @@ const HotPotatoApp: React.FC = () => {
           <Route path="/app">
             <MainDApp />
           </Route>
-          <Route path="/">TODO: home</Route>
+          <Route path="/">
+            <Home />
+          </Route>
         </Switch>
       </div>
     </Router>
