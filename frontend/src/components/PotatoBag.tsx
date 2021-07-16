@@ -6,11 +6,16 @@ import useHotPotato from "../hooks/useHotPotato";
 import { HotPotato } from "../typechain";
 import TossButton from "./TossButton";
 import { RefreshContext } from "../contexts/RefreshContext";
+import {
+  createEtherScanAddressLink,
+  trimAddressForDisplay,
+} from "../utils/misc";
 
 interface Potato {
   id: number;
   isHot: boolean;
   lastTossed: number;
+  from: string | null;
 }
 
 const TempPotatoImage = () => (
@@ -34,9 +39,13 @@ interface PotatoCardProps {
   hotPotato: HotPotato | null;
   id: number;
   isHot: boolean;
+  from: string | null;
 }
 
-interface ButtonProps extends PotatoCardProps {
+interface ButtonProps {
+  hotPotato: HotPotato | null;
+  id: number;
+  isHot: boolean;
   baseClassName: string;
 }
 
@@ -149,9 +158,23 @@ const BurnButton: React.FC<ButtonProps> = ({
 
 BurnButton.propTypes = buttonPropTypes;
 
-const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
+const PotatoCard: React.FC<PotatoCardProps> = ({
+  hotPotato,
+  id,
+  isHot,
+  from,
+}) => {
   const buttonBaseClass =
     "w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300 has-tooltip relative";
+  const addressLink = (address: string) => (
+    <a
+      href={createEtherScanAddressLink(address)}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {trimAddressForDisplay(address)}
+    </a>
+  );
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
@@ -160,7 +183,7 @@ const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
       <div>
         <p>Token ID: {id}</p>
         <p>Status: {isHot ? "♨️" : "🧊"} ️</p>
-        <p>From: 0xabc️</p>
+        <p>From: {from === null ? "error" : addressLink(from)}</p>
       </div>
       <div className="flex justify-center">
         <TossButton
@@ -190,6 +213,7 @@ PotatoCard.propTypes = {
   hotPotato: PropTypes.any.isRequired,
   id: PropTypes.number.isRequired,
   isHot: PropTypes.bool.isRequired,
+  from: PropTypes.string,
 };
 
 const makePotatoCards = (hotPotato: HotPotato | null, potatoes: Potato[]) => {
@@ -218,11 +242,19 @@ const PotatoBag: React.FC = () => {
         const tokenId = await hotPotato.tokenOfOwnerByIndex(address, i);
         const isHot = await hotPotato.isHot(tokenId);
         const lastTossed = await hotPotato.lastTossed(tokenId);
+        const transferEvents = await hotPotato.queryFilter(
+          hotPotato.filters.Transfer(null, null, tokenId)
+        );
+        const fromAddress =
+          transferEvents.length > 0
+            ? transferEvents[transferEvents.length - 1].args.from
+            : null;
 
         potatoes.push({
           id: tokenId.toNumber(),
           isHot,
           lastTossed: lastTossed.toNumber(),
+          from: fromAddress,
         });
       }
       setPotatoes(potatoes);

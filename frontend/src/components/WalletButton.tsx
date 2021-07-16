@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { injectedConnector } from "../utils/connectors";
-
-function trimAddressForDisplay(address: string): string {
-  return address.substring(0, 6) + "..." + address.substring(38);
-}
+import { trimAddressForDisplay } from "../utils/misc";
 
 const WalletButton: React.FC = () => {
   const { account, activate } = useWeb3React();
