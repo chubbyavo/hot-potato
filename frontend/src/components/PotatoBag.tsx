@@ -92,6 +92,9 @@ const BakeButton: React.FC<ButtonProps> = ({
       disabled={isHot}
       onClick={bake}
     >
+      <span className="potato-tooltip">
+        Make 🥔 hot again by baking it (costs 1 MATIC).
+      </span>
       {bakeStatus == "baking" ? bakeSpinner : "Bake ⏲"}
     </button>
   );
@@ -136,6 +139,9 @@ const BurnButton: React.FC<ButtonProps> = ({
 
   return (
     <button type="button" className={baseClassName} onClick={burn}>
+      <span className="potato-tooltip">
+        {"Burn 🥔 if don't want it (costs 1 MATIC)."}
+      </span>
       {burnStatus === "burning" ? burnSpinner : "Burn 🔥"}
     </button>
   );
@@ -145,7 +151,7 @@ BurnButton.propTypes = buttonPropTypes;
 
 const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
   const buttonBaseClass =
-    "w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300";
+    "w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300 has-tooltip relative";
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
@@ -153,7 +159,7 @@ const PotatoCard: React.FC<PotatoCardProps> = ({ hotPotato, id, isHot }) => {
       </div>
       <div>
         <p>Token ID: {id}</p>
-        <p>Status:{isHot ? "🔥" : "❄"} ️</p>
+        <p>Status: {isHot ? "♨️" : "🧊"} ️</p>
         <p>From: 0xabc️</p>
       </div>
       <div className="flex justify-center">

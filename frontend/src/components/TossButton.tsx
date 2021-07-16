@@ -82,6 +82,9 @@ const TossButton: React.FC<TossButtonProps> = ({
         disabled={!isHot}
         onClick={openModal}
       >
+        <span className="potato-tooltip">
+          Toss hot 🥔 before it gets cold 🧊!
+        </span>
         Toss ☄
       </button>
       <Transition
