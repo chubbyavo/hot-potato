@@ -8,6 +8,7 @@ import TossButton from "./TossButton";
 import { RefreshContext } from "../contexts/RefreshContext";
 import { trimAddressForDisplay } from "../utils/misc";
 import { createExplorerAddressLink } from "../utils/links";
+import { ExternalLinkIcon } from "./Icons";
 
 interface Potato {
   id: number;
@@ -156,6 +157,27 @@ const BurnButton: React.FC<ButtonProps> = ({
 
 BurnButton.propTypes = buttonPropTypes;
 
+function AddressLink({ address }: { address: string | null }) {
+  if (address === null) {
+    return <p>error</p>;
+  }
+
+  return (
+    <span>
+      <span className="align-middle inline-block">
+        {trimAddressForDisplay(address)}
+      </span>
+      <a
+        href={createExplorerAddressLink(address)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <ExternalLinkIcon />
+      </a>
+    </span>
+  );
+}
+
 const PotatoCard: React.FC<PotatoCardProps> = ({
   hotPotato,
   id,
@@ -164,15 +186,6 @@ const PotatoCard: React.FC<PotatoCardProps> = ({
 }) => {
   const buttonBaseClass =
     "w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300 has-tooltip relative";
-  const addressLink = (address: string) => (
-    <a
-      href={createExplorerAddressLink(address)}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {trimAddressForDisplay(address)}
-    </a>
-  );
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
@@ -181,7 +194,9 @@ const PotatoCard: React.FC<PotatoCardProps> = ({
       <div>
         <p>Token ID: {id}</p>
         <p>Status: {isHot ? "♨️" : "🧊"} ️</p>
-        <p>From: {from === null ? "error" : addressLink(from)}</p>
+        <p>
+          From: <AddressLink address={from} />
+        </p>
       </div>
       <div className="flex justify-center">
         <TossButton
