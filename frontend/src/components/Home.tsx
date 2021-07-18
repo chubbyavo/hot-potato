@@ -5,20 +5,7 @@ import useHotPotato from "../hooks/useHotPotato";
 import { TypedEvent } from "../typechain/commons";
 import { createExplorerTxLink } from "../utils/links";
 import { getAddressPrefix, toTimeDescription } from "../utils/misc";
-
-const ExternalLink: React.FC = () => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-5 w-5 inline"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-      <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-    </svg>
-  );
-};
+import { ExternalLinkIcon } from "./Icons";
 
 enum Action {
   Mint = "Mint",
@@ -52,7 +39,7 @@ function getChipColor(action: Action): string {
 function TransactionLink({ txHash }: { txHash: string }) {
   return (
     <a href={createExplorerTxLink(txHash)} target="_blank" rel="noreferrer">
-      <ExternalLink />
+      <ExternalLinkIcon />
     </a>
   );
 }
