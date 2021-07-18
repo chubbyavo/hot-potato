@@ -5,11 +5,35 @@ export const ExternalLinkIcon: React.FC = () => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       className="h-5 w-5 inline"
-      viewBox="0 0 20 20"
-      fill="currentColor"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
     >
-      <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-      <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+      />
+    </svg>
+  );
+};
+
+export const ClipboardCopyIcon: React.FC = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5 inline"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+      />
     </svg>
   );
 };

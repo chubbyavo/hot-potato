@@ -8,7 +8,8 @@ import TossButton from "./TossButton";
 import { RefreshContext } from "../contexts/RefreshContext";
 import { trimAddressForDisplay } from "../utils/misc";
 import { createExplorerAddressLink } from "../utils/links";
-import { ExternalLinkIcon } from "./Icons";
+import { ClipboardCopyIcon, ExternalLinkIcon } from "./Icons";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 interface Potato {
   id: number;
@@ -167,7 +168,13 @@ function AddressLink({ address }: { address: string | null }) {
       <span className="align-middle inline-block">
         {trimAddressForDisplay(address)}
       </span>
+      <CopyToClipboard text={address}>
+        <button className="ml-1" type="button">
+          <ClipboardCopyIcon />
+        </button>
+      </CopyToClipboard>
       <a
+        className="ml-1"
         href={createExplorerAddressLink(address)}
         target="_blank"
         rel="noreferrer"
