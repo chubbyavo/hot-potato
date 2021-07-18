@@ -1,18 +1,18 @@
 import * as dotenv from "dotenv";
 
 dotenv.config();
-const { DEPLOYMENT_ENV } = process.env;
+const { REACT_APP_DEPLOYMENT_ENV } = process.env;
 
 function createExplorerLink(type: string, id: string): string {
-  if (DEPLOYMENT_ENV === "POLYGON") {
+  if (REACT_APP_DEPLOYMENT_ENV === "POLYGON") {
     return `https://polygonscan.com/${type}/${id}`;
   }
 
-  if (DEPLOYMENT_ENV === "ROPSTEN") {
+  if (REACT_APP_DEPLOYMENT_ENV === "ROPSTEN") {
     return `https://ropsten.etherscan.io/${type}/${id}`;
   }
 
-  if (DEPLOYMENT_ENV === "RINKEBY") {
+  if (REACT_APP_DEPLOYMENT_ENV === "RINKEBY") {
     return `https://rinkeby.etherscan.io/${type}/${id}`;
   }
 

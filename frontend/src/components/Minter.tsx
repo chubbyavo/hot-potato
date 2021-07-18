@@ -34,12 +34,9 @@ const Minter: React.FC = () => {
     setStatus("mint");
     try {
       const mintFee = await hotPotato.mintFee();
-      const gasLimit = await hotPotato.estimateGas.safeMint(toAddress, {
-        value: mintFee,
-      });
       const tx = await hotPotato.safeMint(toAddress, {
         value: mintFee,
-        gasLimit: gasLimit,
+        gasLimit: 250000,
       });
       await tx.wait();
       triggerRefresh();
