@@ -6,6 +6,7 @@ import { TypedEvent } from "../typechain/commons";
 import { createExplorerTxLink } from "../utils/links";
 import { getAddressPrefix, toTimeDescription } from "../utils/misc";
 import { ExternalLinkIcon } from "./Icons";
+import { PotatoSpinner } from "./Spinners";
 
 enum Action {
   Mint = "Mint",
@@ -95,10 +96,6 @@ function RecentTransactionsTable({
       ))}
     </table>
   );
-}
-
-function PotatoSpinner() {
-  return <span className="animate-spin text-5xl">🥔</span>;
 }
 
 type TransferEvent = TypedEvent<

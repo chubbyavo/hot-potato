@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 import useHotPotato from "../hooks/useHotPotato";
 import { HotPotato } from "../typechain";
 import TossButton from "./TossButton";
+import { PotatoSpinner } from "./Spinners";
 import { RefreshContext } from "../contexts/RefreshContext";
 import { trimAddressForDisplay } from "../utils/misc";
 import { createExplorerAddressLink } from "../utils/links";
@@ -289,7 +290,8 @@ const PotatoBag: React.FC = () => {
   return (
     <div className="space-y-4">
       <h2 className="text-center">Your 🥔s:</h2>
-      <div className="text-center">
+      <div className="flex justify-center text-center">
+        {!fetched && <PotatoSpinner />}
         {potatoes.length === 0 &&
           fetched &&
           "🎉 Yay, you don't have any potatoes! (that's a good thing!!?)"}
