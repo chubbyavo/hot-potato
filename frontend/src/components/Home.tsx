@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import useHotPotato from "../hooks/useHotPotato";
 import { TypedEvent } from "../typechain/commons";
+import { createExplorerTxLink } from "../utils/links";
 import { getAddressPrefix, toTimeDescription } from "../utils/misc";
 
 const ExternalLink: React.FC = () => {
@@ -48,13 +49,21 @@ function getChipColor(action: Action): string {
   }
 }
 
+function TransactionLink({ txHash }: { txHash: string }) {
+  return (
+    <a href={createExplorerTxLink(txHash)} target="_blank" rel="noreferrer">
+      <ExternalLink />
+    </a>
+  );
+}
+
 function TransactionRow({
   action,
   tokenId,
   detail,
   timeDescription,
+  txHash,
 }: Transaction) {
-  // TODO: create a link with txHash
   const chipColor = getChipColor(action);
   return (
     <tr>
@@ -69,7 +78,7 @@ function TransactionRow({
       <td className="px-2 py-3">{detail}</td>
       <td className="px-2 py-3 text-right">
         <p>
-          {timeDescription} <ExternalLink />
+          {timeDescription} <TransactionLink txHash={txHash} />
         </p>
       </td>
     </tr>

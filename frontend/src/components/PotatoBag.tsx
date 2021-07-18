@@ -6,10 +6,8 @@ import useHotPotato from "../hooks/useHotPotato";
 import { HotPotato } from "../typechain";
 import TossButton from "./TossButton";
 import { RefreshContext } from "../contexts/RefreshContext";
-import {
-  createEtherScanAddressLink,
-  trimAddressForDisplay,
-} from "../utils/misc";
+import { trimAddressForDisplay } from "../utils/misc";
+import { createExplorerAddressLink } from "../utils/links";
 
 interface Potato {
   id: number;
@@ -168,7 +166,7 @@ const PotatoCard: React.FC<PotatoCardProps> = ({
     "w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300 has-tooltip relative";
   const addressLink = (address: string) => (
     <a
-      href={createEtherScanAddressLink(address)}
+      href={createExplorerAddressLink(address)}
       target="_blank"
       rel="noreferrer"
     >
