@@ -193,7 +193,7 @@ const PotatoCard: React.FC<PotatoCardProps> = ({
   from,
 }) => {
   const buttonBaseClass =
-    "w-24 sm:w-18 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300 has-tooltip relative";
+    "w-18 md:w-24 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300 has-tooltip relative";
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
@@ -296,7 +296,7 @@ const PotatoBag: React.FC = () => {
           fetched &&
           "🎉 Yay, you don't have any potatoes! (that's a good thing!!?)"}
       </div>
-      <div className="md:w-3/4 xl:w-2/3 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="lg:w-3/4 xl:w-2/3 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
         {makePotatoCards(hotPotato, potatoes)}
       </div>
     </div>

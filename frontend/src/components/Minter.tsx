@@ -61,9 +61,9 @@ const Minter: React.FC = () => {
       <form className="mx-auto">
         <label className="font-semibold">{"Mint & Send 🥔 To:"}</label>
         <br />
-        <div className="relative flex">
+        <div className="relative flex justify-center">
           <input
-            className={`w-72 lg:w-96 p-2 border-2 rounded-md ${
+            className={`w-60 md:w-72 lg:w-96 p-2 border-2 rounded-md ${
               showAddressInputError() ? "border-red-600" : "border-black"
             }`}
             type="text"
@@ -73,7 +73,7 @@ const Minter: React.FC = () => {
           />
           <button
             type="button"
-            className="w-24 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300"
+            className="w-18 md:w-24 font-medium border-2 rounded-md border-black p-2 ml-2 hover:bg-yellow-300"
             onClick={mint}
           >
             {status === "mint" ? mintingSpinner : "Send 🥔"}

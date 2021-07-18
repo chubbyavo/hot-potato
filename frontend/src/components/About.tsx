@@ -2,14 +2,14 @@ import React from "react";
 
 const About: React.FC = () => {
   return (
-    <div className="container flex justify-center mt-4">
+    <div className="container flex justify-center mt-4 px-4">
       <article className="container prose prose-yellow lg:prose-xl">
         <h2>HotPotato</h2>
         <p>
-          {
-            "HotPotato is a prank NFT project. It is not cool to have a 🥔 in one's wallet. "
-          }
-          {"The mechanism is inspired bs inspired by "}
+          {"HotPotato is a prank NFT project. "}
+          {`It's very uncool to have a 🥔 in one's wallet (`}
+          <span className="line-through">one will NGMI</span>
+          ).{" The mechanism is inspired by "}
           <a
             href="https://en.wikipedia.org/wiki/Hot_potato"
             target="_blank"
@@ -23,7 +23,7 @@ const About: React.FC = () => {
         <p>
           {"Once minted, the 🥔 is hot ♨️ for 24 hours. " +
             "The current owner of the 🥔 has 24 hours to toss to someone else. " +
-            "After 24 hours the 🥔 becomes cold 🧊 and it becomes un-tossable. " +
+            "After 24 hours the 🥔 becomes cold 🧊 and it becomes un-tossable (i.e dropping a potato). " +
             "When the 🥔 is successfully tossed, the timer resets and the new owner gets 24 hours to toss."}
         </p>
         <h3>Actions</h3>

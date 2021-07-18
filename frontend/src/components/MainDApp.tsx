@@ -9,7 +9,7 @@ const MainDApp: React.FC = () => {
 
   return (
     <RefreshContext.Provider value={{ refresh, triggerRefresh }}>
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4">
         <Minter />
         <PotatoBag />
       </div>
