@@ -79,26 +79,28 @@ function RecentTransactionsTable({
   transactions: Transaction[];
 }) {
   return (
-    <table className="xs:w-full md:w-3/4 xl:w-1/2 table-auto border-collapse border border-yellow-600 rounded-md">
-      <thead>
-        <tr className="border border-yellow-600 ">
-          <th className="py-3 uppercase">Action</th>
-          <th className="py-3 uppercase">Token ID</th>
-          <th className="py-3 uppercase">Detail</th>
-          <th className="py-3 uppercase">Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {transactions.map(({ action, txHash, ...props }) => (
-          <TransactionRow
-            key={action + txHash}
-            action={action}
-            txHash={txHash}
-            {...props}
-          />
-        ))}
-      </tbody>
-    </table>
+    <div className="w-full md:w-3/4 xl:w-1/2 border-2 border-yellow-400 rounded-lg mx-1">
+      <table className="w-full table-auto border-collapse">
+        <thead>
+          <tr className="border-b-2 border-yellow-400 ">
+            <th className="py-3 uppercase">Action</th>
+            <th className="py-3 uppercase">Token ID</th>
+            <th className="py-3 uppercase">Detail</th>
+            <th className="py-3 uppercase">Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.map(({ action, txHash, ...props }) => (
+            <TransactionRow
+              key={action + txHash}
+              action={action}
+              txHash={txHash}
+              {...props}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
