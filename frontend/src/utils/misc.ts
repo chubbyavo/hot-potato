@@ -42,7 +42,3 @@ export function trimAddressForDisplay(address: string): string {
 export function getAddressPrefix(address: string): string {
   return address.substring(0, 5);
 }
-
-export function createEtherScanAddressLink(address: string): string {
-  return `https:etherscan.io/address/${address}`;
-}
