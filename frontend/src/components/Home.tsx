@@ -1,3 +1,4 @@
+import { useWeb3React } from "@web3-react/core";
 import { BigNumber, ethers } from "ethers";
 import React, { useState } from "react";
 import { useEffect } from "react";
@@ -209,6 +210,8 @@ const Home: React.FC = () => {
     return () => clearInterval(interval);
   }, [hotPotato]);
 
+  const { active } = useWeb3React();
+
   return (
     <div className="container mx-auto">
       <div className="text-8xl text-center mt-4">🥔</div>
@@ -223,6 +226,11 @@ const Home: React.FC = () => {
             <PotatoSpinner />
           )}
         </div>
+        {active || (
+          <div className="text-center mt-4 text-red-500">
+            Please connect your wallet
+          </div>
+        )}
       </div>
     </div>
   );

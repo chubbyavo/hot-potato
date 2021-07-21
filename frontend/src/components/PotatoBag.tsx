@@ -244,7 +244,7 @@ const makePotatoCards = (hotPotato: HotPotato | null, potatoes: Potato[]) => {
 };
 
 const PotatoBag: React.FC = () => {
-  const { account } = useWeb3React();
+  const { account, active } = useWeb3React();
   const hotPotato = useHotPotato();
 
   const [fetched, setFetched] = useState(false);
@@ -284,6 +284,9 @@ const PotatoBag: React.FC = () => {
 
     if (account) {
       fetchPotatoes(account);
+    } else {
+      setPotatoes([]);
+      setFetched(false);
     }
   }, [account, hotPotato, refresh]);
 
@@ -296,6 +299,11 @@ const PotatoBag: React.FC = () => {
           fetched &&
           "🎉 Yay, you don't have any potatoes! (that's a good thing!!?)"}
       </div>
+      {active || (
+        <div className="text-center mt-4 text-red-500">
+          Please connect your wallet
+        </div>
+      )}
       <div className="lg:w-3/4 xl:w-2/3 mx-auto grid grid-cols-1 md:grid-cols-2 gap-2">
         {makePotatoCards(hotPotato, potatoes)}
       </div>
