@@ -30,8 +30,11 @@ const TempPotatoImage = () => (
       strokeWidth="3"
       fill="goldenrod"
     />
-    <text x="63" y="100">
+    <text x="63" y="95">
       {"I'm a potato"}
+    </text>
+    <text x="18" y="115">
+      {"(placeholder for artwork)"}
     </text>
   </svg>
 );
