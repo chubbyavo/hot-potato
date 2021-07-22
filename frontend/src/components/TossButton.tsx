@@ -5,6 +5,7 @@ import { HotPotato } from "../typechain";
 import { Dialog, Transition } from "@headlessui/react";
 import { useWeb3React } from "@web3-react/core";
 import { RefreshContext } from "../contexts/RefreshContext";
+import { XIcon } from "./Icons";
 
 interface TossButtonProps {
   hotPotato: HotPotato | null;
@@ -12,24 +13,6 @@ interface TossButtonProps {
   isHot: boolean;
   baseClassName: string;
 }
-
-// Copied from https://heroicons.com/
-const X: React.FC = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="h-6 w-6"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M6 18L18 6M6 6l12 12"
-    />
-  </svg>
-);
 
 const TossSpinner: React.FC = () => (
   <div className="flex">
@@ -122,7 +105,7 @@ const TossButton: React.FC<TossButtonProps> = ({
                   Tossing unwanted 🥔
                 </Dialog.Title>
                 <button type="button" className="ml-auto" onClick={closeModal}>
-                  <X />
+                  <XIcon />
                 </button>
               </div>
               <div className="mt-4">
