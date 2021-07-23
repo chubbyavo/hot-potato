@@ -25,16 +25,29 @@ interface Transaction {
   blockNumber: number;
 }
 
-function getChipColor(action: Action): string {
+function getChipBg(action: Action): string {
   switch (action) {
     case Action.Mint:
-      return "green";
+      return "bg-green-200";
     case Action.Bake:
-      return "yellow";
+      return "bg-yellow-200";
     case Action.Toss:
-      return "blue";
+      return "bg-blue-200";
     case Action.Burn:
-      return "red";
+      return "bg-red-200";
+  }
+}
+
+function getChipText(action: Action): string {
+  switch (action) {
+    case Action.Mint:
+      return "text-green-600";
+    case Action.Bake:
+      return "text-yellow-600";
+    case Action.Toss:
+      return "text-blue-600";
+    case Action.Burn:
+      return "text-red-600";
   }
 }
 
@@ -53,12 +66,13 @@ function TransactionRow({
   timeDescription,
   txHash,
 }: Transaction) {
-  const chipColor = getChipColor(action);
   return (
     <tr>
       <td className="px-2 py-3 text-center">
         <span
-          className={`bg-${chipColor}-200 text-${chipColor}-600 py-1 px-3 rounded-full text-xs`}
+          className={`${getChipBg(action)} ${getChipText(
+            action
+          )} py-1 px-3 rounded-full text-xs`}
         >
           {action}
         </span>
