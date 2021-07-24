@@ -23,13 +23,15 @@ interface Potato {
 const TempPotatoImageType0 = () => (
   <svg height="200" width="200" className="rounded-lg">
     <rect width="100%" height="100%" fill="dimgray" />
-    <circle
+    <ellipse
       cx="100"
       cy="100"
-      r="90"
+      rx="90"
+      ry="70"
       stroke="black"
       strokeWidth="3"
       fill="goldenrod"
+      transform="rotate(25, 100, 100)"
     />
     <text x="57" y="95">
       {"I'm a potato (0)"}
@@ -43,13 +45,15 @@ const TempPotatoImageType0 = () => (
 const TempPotatoImageType1 = () => (
   <svg height="200" width="200" className="rounded-lg">
     <rect width="100%" height="100%" fill="dimgray" />
-    <circle
+    <ellipse
       cx="100"
       cy="100"
-      r="90"
+      rx="90"
+      ry="70"
       stroke="black"
       strokeWidth="3"
       fill="darkgoldenrod"
+      transform="rotate(-25, 100, 100)"
     />
     <text x="57" y="95">
       {"I'm a potato (1)"}
