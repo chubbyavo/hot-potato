@@ -2,6 +2,9 @@
 // but useful for running the script in a standalone fashion through `node <script>`.
 //
 // When running the script with `hardhat run <script>` you'll find the Hardhat
+
+import { HotPotato__factory } from "../typechain";
+
 // Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
 
@@ -14,10 +17,14 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const HotPotato = await hre.ethers.getContractFactory("HotPotato");
-  const hotPotato = await HotPotato.deploy();
+  const hotPotatoFactory = (await hre.ethers.getContractFactory(
+    "HotPotato"
+  )) as HotPotato__factory;
+  const hotPotato = await hotPotatoFactory.deploy();
 
   await hotPotato.deployed();
+  await hotPotato.addType("https://foobar.com/potato/0");
+  await hotPotato.addType("https://foobar.com/potato/1");
 
   console.log("HotPotato deployed to:", hotPotato.address);
 }
