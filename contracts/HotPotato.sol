@@ -11,18 +11,22 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
 
   event Burn(address indexed owner, uint256 indexed tokenId);
 
-  uint256 private constant _HOT_DURATION = 1 days;
   Counters.Counter private _tokenIdCounter;
 
   mapping(uint256 => uint256) public lastTossed;
   uint256 public mintFee = 0.00001 ether;
   uint256 public burnFee = 0.00001 ether;
+  uint256 public hotDuration = 1 days;
 
   constructor() ERC721("HotPotato", "HOT") {}
 
   function setFees(uint256 _mintFee, uint256 _burnFee) public onlyOwner {
     mintFee = _mintFee;
     burnFee = _burnFee;
+  }
+
+  function setHotDuration(uint256 _hotDuration) public onlyOwner {
+    hotDuration = _hotDuration;
   }
 
   function safeMint(address to) public payable {
@@ -40,7 +44,7 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
 
   function isHot(uint256 tokenId) public view returns (bool) {
     require(lastTossed[tokenId] != 0, "isHot query for nonexistent token");
-    return (block.timestamp - lastTossed[tokenId]) < _HOT_DURATION;
+    return (block.timestamp - lastTossed[tokenId]) < hotDuration;
   }
 
   function burn(uint256 tokenId) public payable {

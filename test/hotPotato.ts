@@ -166,6 +166,20 @@ describe("HotPotato contract", function () {
     });
   });
 
+  describe("HotPotato - setHotDuration", function () {
+    it("Should not be able to setHotDuration if not owner", async function () {
+      await expect(
+        hotPotato.connect(addr1).setHotDuration(42)
+      ).to.be.revertedWith("Ownable: caller is not the owner");
+    });
+
+    it("Should be able to setHotDuration if owner", async function () {
+      hotPotato = await hotPotatoFactory.deploy();
+      await hotPotato.setHotDuration(3600 * 48);
+      expect(await hotPotato.hotDuration()).to.be.equal(3600 * 48);
+    });
+  });
+
   describe("HotPotato - Hot/Cold Logic", function () {
     it("Should be hot after mint", async function () {
       hotPotato = await hotPotatoFactory.deploy();
@@ -191,6 +205,18 @@ describe("HotPotato contract", function () {
       await increaseEvmTime(3600 * 24);
 
       expect(await hotPotato.isHot(0)).to.false;
+    });
+
+    it("Should use new hotDuration when it's updated", async function () {
+      hotPotato = await hotPotatoFactory.deploy();
+      await hotPotato.safeMint(owner.address, { value: MINT_FEE });
+      expect(await hotPotato.isHot(0)).to.true;
+
+      await increaseEvmTime(3600 * 24);
+      expect(await hotPotato.isHot(0)).to.false;
+
+      await hotPotato.setHotDuration(3600 * 48);
+      expect(await hotPotato.isHot(0)).to.true;
     });
 
     it("Should be able to transfer hot potato", async function () {
