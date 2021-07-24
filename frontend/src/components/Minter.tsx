@@ -34,7 +34,7 @@ const Minter: React.FC = () => {
     setStatus("mint");
     try {
       const mintFee = await hotPotato.mintFee();
-      const tx = await hotPotato.safeMint(toAddress, {
+      const tx = await hotPotato.safeMint(0, toAddress, {
         value: mintFee,
         gasLimit: 250000,
       });

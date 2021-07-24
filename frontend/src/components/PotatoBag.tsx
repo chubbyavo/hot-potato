@@ -14,12 +14,13 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 
 interface Potato {
   id: number;
+  type: number;
   isHot: boolean;
   lastTossed: number;
   from: string | null;
 }
 
-const TempPotatoImage = () => (
+const TempPotatoImageType0 = () => (
   <svg height="200" width="200" className="rounded-lg">
     <rect width="100%" height="100%" fill="dimgray" />
     <circle
@@ -30,8 +31,28 @@ const TempPotatoImage = () => (
       strokeWidth="3"
       fill="goldenrod"
     />
-    <text x="63" y="95">
-      {"I'm a potato"}
+    <text x="57" y="95">
+      {"I'm a potato (0)"}
+    </text>
+    <text x="18" y="115">
+      {"(placeholder for artwork)"}
+    </text>
+  </svg>
+);
+
+const TempPotatoImageType1 = () => (
+  <svg height="200" width="200" className="rounded-lg">
+    <rect width="100%" height="100%" fill="dimgray" />
+    <circle
+      cx="100"
+      cy="100"
+      r="90"
+      stroke="black"
+      strokeWidth="3"
+      fill="darkgoldenrod"
+    />
+    <text x="57" y="95">
+      {"I'm a potato (1)"}
     </text>
     <text x="18" y="115">
       {"(placeholder for artwork)"}
@@ -41,6 +62,7 @@ const TempPotatoImage = () => (
 
 interface PotatoCardProps {
   hotPotato: HotPotato | null;
+  type: number;
   id: number;
   isHot: boolean;
   from: string | null;
@@ -59,61 +81,6 @@ const buttonPropTypes = {
   isHot: PropTypes.bool.isRequired,
   baseClassName: PropTypes.string.isRequired,
 };
-
-const BakeButton: React.FC<ButtonProps> = ({
-  hotPotato,
-  id,
-  isHot,
-  baseClassName,
-}) => {
-  const [bakeStatus, setBakeStatus] = useState("idle");
-  const { triggerRefresh } = useContext(RefreshContext);
-
-  const bake = async () => {
-    if (hotPotato === null) {
-      return;
-    }
-
-    setBakeStatus("baking");
-    try {
-      const bakeFee = await hotPotato.bakeFee();
-
-      const tx = await hotPotato.bake(id, {
-        value: bakeFee,
-        gasLimit: 50000,
-      });
-      await tx.wait();
-      triggerRefresh();
-      setBakeStatus("complete");
-      setTimeout(() => setBakeStatus("idle"), 5000);
-    } catch (error) {
-      setBakeStatus("idle");
-    }
-  };
-
-  const bakeSpinner = (
-    <div className="flex">
-      Baking
-      <div className="animate-bounce ml-1">⏲</div>
-    </div>
-  );
-
-  return (
-    <button
-      type="button"
-      className={baseClassName + (isHot ? " cursor-not-allowed" : "")}
-      disabled={isHot}
-      onClick={bake}
-    >
-      <span className="potato-tooltip">
-        Make 🥔 hot again by baking it (costs 1 MATIC).
-      </span>
-      {bakeStatus == "baking" ? bakeSpinner : "Bake ⏲"}
-    </button>
-  );
-};
-
-BakeButton.propTypes = buttonPropTypes;
 
 const BurnButton: React.FC<ButtonProps> = ({
   hotPotato,
@@ -189,18 +156,13 @@ function AddressLink({ address }: { address: string | null }) {
   );
 }
 
-const PotatoCard: React.FC<PotatoCardProps> = ({
-  hotPotato,
-  id,
-  isHot,
-  from,
-}) => {
+function PotatoCard({ hotPotato, type, id, isHot, from }: PotatoCardProps) {
   const buttonBaseClass =
     "w-18 md:w-24 font-medium border-2 rounded-md border-black p-2 mx-2 hover:bg-yellow-300 has-tooltip relative";
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
-        <TempPotatoImage />
+        {type === 0 ? <TempPotatoImageType0 /> : <TempPotatoImageType1 />}
       </div>
       <div>
         <p>Token ID: {id}</p>
@@ -216,12 +178,6 @@ const PotatoCard: React.FC<PotatoCardProps> = ({
           isHot={isHot}
           baseClassName={buttonBaseClass}
         />
-        <BakeButton
-          hotPotato={hotPotato}
-          id={id}
-          isHot={isHot}
-          baseClassName={buttonBaseClass}
-        />
         <BurnButton
           hotPotato={hotPotato}
           id={id}
@@ -231,14 +187,7 @@ const PotatoCard: React.FC<PotatoCardProps> = ({
       </div>
     </div>
   );
-};
-
-PotatoCard.propTypes = {
-  hotPotato: PropTypes.any.isRequired,
-  id: PropTypes.number.isRequired,
-  isHot: PropTypes.bool.isRequired,
-  from: PropTypes.string,
-};
+}
 
 const makePotatoCards = (hotPotato: HotPotato | null, potatoes: Potato[]) => {
   return potatoes.map((potato) => (
@@ -264,6 +213,7 @@ const PotatoBag: React.FC = () => {
       const balance = await hotPotato.balanceOf(address);
       for (let i = 0; i < balance.toNumber(); i++) {
         const tokenId = await hotPotato.tokenOfOwnerByIndex(address, i);
+        const type = await hotPotato.tokenIdToType(tokenId);
         const isHot = await hotPotato.isHot(tokenId);
         const lastTossed = await hotPotato.lastTossed(tokenId);
         const transferEvents = await hotPotato.queryFilter(
@@ -276,6 +226,7 @@ const PotatoBag: React.FC = () => {
 
         potatoes.push({
           id: tokenId.toNumber(),
+          type: type.toNumber(),
           isHot,
           lastTossed: lastTossed.toNumber(),
           from: fromAddress,

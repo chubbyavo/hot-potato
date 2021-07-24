@@ -12,7 +12,6 @@ import { PotatoSpinner } from "./Spinners";
 enum Action {
   Mint = "Mint",
   Toss = "Toss",
-  Bake = "Bake",
   Burn = "Burn",
 }
 
@@ -29,8 +28,6 @@ function getChipBg(action: Action): string {
   switch (action) {
     case Action.Mint:
       return "bg-green-200";
-    case Action.Bake:
-      return "bg-yellow-200";
     case Action.Toss:
       return "bg-blue-200";
     case Action.Burn:
@@ -42,8 +39,6 @@ function getChipText(action: Action): string {
   switch (action) {
     case Action.Mint:
       return "text-green-600";
-    case Action.Bake:
-      return "text-yellow-600";
     case Action.Toss:
       return "text-blue-600";
     case Action.Burn:
@@ -123,10 +118,6 @@ type TransferEvent = TypedEvent<
   [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
 >;
 
-type BakeEvent = TypedEvent<
-  [string, BigNumber] & { owner: string; tokenId: BigNumber }
->;
-
 async function transferEventToTransaction(
   transferEvent: TransferEvent
 ): Promise<Transaction> {
@@ -169,20 +160,6 @@ async function transferEventToTransaction(
   };
 }
 
-async function bakeEventToTransaction(
-  bakeEvent: BakeEvent
-): Promise<Transaction> {
-  const timestamp = await (await bakeEvent.getBlock()).timestamp;
-  return {
-    action: Action.Bake,
-    tokenId: bakeEvent.args.tokenId.toNumber(),
-    detail: `by ${getAddressPrefix(bakeEvent.args.owner)}`,
-    timeDescription: toTimeDescription(timestamp),
-    txHash: bakeEvent.transactionHash,
-    blockNumber: bakeEvent.blockNumber,
-  };
-}
-
 const Home: React.FC = () => {
   const hotPotato = useHotPotato();
   const [fetched, setFetched] = useState(false);
@@ -201,15 +178,7 @@ const Home: React.FC = () => {
         transferEvents.map(transferEventToTransaction)
       );
 
-      const bakeEvents = (
-        await hotPotato.queryFilter(hotPotato.filters.Bake(), -200000)
-      ).slice(0, 5);
-      const bakeTxs = await Promise.all(bakeEvents.map(bakeEventToTransaction));
-
-      const txs = transferTxs
-        .concat(bakeTxs)
-        .sort((a, b) => b.blockNumber - a.blockNumber)
-        .slice(0, 10);
+      const txs = transferTxs.sort((a, b) => b.blockNumber - a.blockNumber);
 
       setTransactions(txs);
       setFetched(true);
