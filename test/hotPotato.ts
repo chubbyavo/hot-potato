@@ -4,7 +4,6 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { HotPotato, HotPotato__factory } from "../typechain";
 
 const MINT_FEE = ethers.utils.parseEther("0.00001");
-const BAKE_FEE = ethers.utils.parseEther("0.00001");
 const BURN_FEE = ethers.utils.parseEther("0.00001");
 
 async function increaseEvmTime(seconds: number) {
@@ -74,41 +73,6 @@ describe("HotPotato contract", function () {
       .withArgs(addr1.address, addr2.address, 1);
   });
 
-  describe("HotPotato - bake", function () {
-    it("Should not be able to bake if not owner", async function () {
-      hotPotato = await hotPotatoFactory.deploy();
-      await hotPotato.safeMint(owner.address, { value: MINT_FEE });
-
-      await expect(
-        hotPotato.connect(addr1).bake(0, { value: BAKE_FEE })
-      ).to.be.revertedWith("bake caller is not owner");
-    });
-
-    it("Should not be able to bake without correct fee", async function () {
-      hotPotato = await hotPotatoFactory.deploy();
-      await hotPotato.safeMint(owner.address, { value: MINT_FEE });
-
-      await expect(
-        hotPotato.bake(0, { value: BAKE_FEE.sub(1) })
-      ).to.be.revertedWith("Incorrect bake fee");
-    });
-
-    it("Should update lastToss after bake", async function () {
-      hotPotato = await hotPotatoFactory.deploy();
-
-      const now = Date.now();
-      setNextBlockTimestamp(now + 420);
-      await hotPotato.safeMint(owner.address, { value: MINT_FEE });
-      expect(await hotPotato.lastTossed(0)).to.equal(now + 420);
-
-      setNextBlockTimestamp(now + 840);
-      await expect(hotPotato.bake(0, { value: BAKE_FEE }))
-        .to.emit(hotPotato, "Bake")
-        .withArgs(owner.address, 0);
-      expect(await hotPotato.lastTossed(0)).to.equal(now + 840);
-    });
-  });
-
   describe("HotPotato - burn", function () {
     it("Should not be able to burn if not owner", async function () {
       hotPotato = await hotPotatoFactory.deploy();
@@ -148,37 +112,31 @@ describe("HotPotato contract", function () {
     it("Should not be able to setFees if not owner", async function () {
       const newFee = ethers.utils.parseEther("0.1");
       await expect(
-        hotPotato.connect(addr1).setFees(newFee, newFee, newFee)
+        hotPotato.connect(addr1).setFees(newFee, newFee)
       ).to.be.revertedWith("Ownable: caller is not the owner");
     });
 
     it("Should be able to setFees if owner", async function () {
       hotPotato = await hotPotatoFactory.deploy();
       const newMintFee = ethers.utils.parseEther("0.01");
-      const newBakeFee = ethers.utils.parseEther("0.02");
       const newBurnFee = ethers.utils.parseEther("0.03");
-      await hotPotato.setFees(newMintFee, newBakeFee, newBurnFee);
+      await hotPotato.setFees(newMintFee, newBurnFee);
 
       expect(await hotPotato.mintFee()).to.be.equal(newMintFee);
-      expect(await hotPotato.bakeFee()).to.be.equal(newBakeFee);
       expect(await hotPotato.burnFee()).to.be.equal(newBurnFee);
     });
 
     it("Should revert if previous fees are used", async function () {
       hotPotato = await hotPotatoFactory.deploy();
       const newMintFee = ethers.utils.parseEther("0.01");
-      const newBakeFee = ethers.utils.parseEther("0.02");
       const newBurnFee = ethers.utils.parseEther("0.03");
-      await hotPotato.setFees(newMintFee, newBakeFee, newBurnFee);
+      await hotPotato.setFees(newMintFee, newBurnFee);
 
       await expect(
         hotPotato.safeMint(owner.address, { value: MINT_FEE })
       ).to.be.revertedWith("Incorrect mint fee");
 
       await hotPotato.safeMint(owner.address, { value: newMintFee });
-      await expect(hotPotato.bake(0, { value: BAKE_FEE })).to.be.revertedWith(
-        "Incorrect bake fee"
-      );
       await expect(hotPotato.burn(0, { value: BURN_FEE })).to.be.revertedWith(
         "Incorrect burn fee"
       );

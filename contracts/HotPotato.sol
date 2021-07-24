@@ -9,7 +9,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
 
-  event Bake(address indexed owner, uint256 indexed tokenId);
   event Burn(address indexed owner, uint256 indexed tokenId);
 
   uint256 private constant _HOT_DURATION = 1 days;
@@ -17,18 +16,12 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
 
   mapping(uint256 => uint256) public lastTossed;
   uint256 public mintFee = 0.00001 ether;
-  uint256 public bakeFee = 0.00001 ether;
   uint256 public burnFee = 0.00001 ether;
 
   constructor() ERC721("HotPotato", "HOT") {}
 
-  function setFees(
-    uint256 _mintFee,
-    uint256 _bakeFee,
-    uint256 _burnFee
-  ) public onlyOwner {
+  function setFees(uint256 _mintFee, uint256 _burnFee) public onlyOwner {
     mintFee = _mintFee;
-    bakeFee = _bakeFee;
     burnFee = _burnFee;
   }
 
@@ -48,14 +41,6 @@ contract HotPotato is ERC721, ERC721Enumerable, Ownable {
   function isHot(uint256 tokenId) public view returns (bool) {
     require(lastTossed[tokenId] != 0, "isHot query for nonexistent token");
     return (block.timestamp - lastTossed[tokenId]) < _HOT_DURATION;
-  }
-
-  function bake(uint256 tokenId) public payable {
-    require(msg.value == bakeFee, "Incorrect bake fee");
-    address owner = ERC721.ownerOf(tokenId);
-    require(_msgSender() == owner, "bake caller is not owner");
-    lastTossed[tokenId] = block.timestamp;
-    emit Bake(owner, tokenId);
   }
 
   function burn(uint256 tokenId) public payable {
