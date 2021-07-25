@@ -23,7 +23,7 @@ const NavBar: React.FC = () => {
           </li>
         </ul>
       </div>
-      <div className="ml-auto">
+      <div className="flex justify-center bg-yellow-400 fixed md:relative bottom-0 md:bottom-auto left-0 md:right-auto w-screen md:w-max md:ml-auto py-2 md:py-0 z-10">
         <WalletButton />
       </div>
     </nav>

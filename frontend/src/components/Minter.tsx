@@ -21,12 +21,12 @@ const potatoTypes = [
   {
     potatoType: 1,
     name: "NGMI",
-    description: "The holder of this 🥔 will not going to make it!",
+    description: "The owner of this 🥔 will not going to make it!",
   },
   {
     potatoType: 2,
     name: "HFSP",
-    description: "The holder of this 🥔 will have fun staying poor 😭",
+    description: "The owner of this 🥔 will have fun staying poor 😭",
   },
 ];
 
@@ -38,62 +38,60 @@ function PotatoTypeRadioGroup({
   setType: (type: number) => void;
 }) {
   return (
-    <div>
-      <RadioGroup value={type} onChange={setType}>
-        <RadioGroup.Label className="font-semibold">Select 🥔</RadioGroup.Label>
-        <div className="flex flex-wrap md:flex-none mt-2 space-y-2 space-x-2 justify-between items-center">
-          <div>
-            {potatoTypes.map(({ potatoType, name, description }) => (
-              <RadioGroup.Option
-                key={potatoType}
-                value={potatoType}
-                className={({ active, checked }) =>
-                  `${
-                    active
-                      ? "ring-2 ring-offset-2 ring-offset-yellow-300 ring-white ring-opacity-60"
-                      : ""
-                  }
+    <RadioGroup value={type} onChange={setType}>
+      <RadioGroup.Label className="font-semibold">Select 🥔</RadioGroup.Label>
+      <div className="flex flex-wrap md:flex-none mt-2 space-y-2 space-x-2 justify-between items-center">
+        <div>
+          {potatoTypes.map(({ potatoType, name, description }) => (
+            <RadioGroup.Option
+              key={potatoType}
+              value={potatoType}
+              className={({ active, checked }) =>
+                `${
+                  active
+                    ? "ring-2 ring-offset-2 ring-offset-yellow-300 ring-white ring-opacity-60"
+                    : ""
+                }
                   ${
                     checked
                       ? "bg-yellow-200 bg-opacity-75 text-black"
                       : "bg-white"
                   }
                     relative rounded-lg shadow-md mt-2 px-3 py-4 cursor-pointer flex focus:outline-none`
-                }
-              >
-                {({ active, checked }) => (
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center">
-                      <div className="text-sm">
-                        <RadioGroup.Label
-                          as="p"
-                          className={`font-medium  ${
-                            checked ? "text-black" : "text-gray-900"
-                          }`}
-                        >
-                          {name}
-                        </RadioGroup.Label>
-                        <RadioGroup.Description
-                          as="span"
-                          className={`inline ${
-                            checked ? "text-black" : "text-gray-500"
-                          }`}
-                        >
-                          <span>{description}</span>
-                        </RadioGroup.Description>
-                      </div>
+              }
+            >
+              {({ active, checked }) => (
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center">
+                    <div className="text-sm">
+                      <RadioGroup.Label
+                        as="p"
+                        className={`font-medium  ${
+                          checked ? "text-black" : "text-gray-900"
+                        }`}
+                      >
+                        {name}
+                      </RadioGroup.Label>
+                      <RadioGroup.Description
+                        as="span"
+                        className={`inline ${
+                          checked ? "text-black" : "text-gray-500"
+                        }`}
+                      >
+                        <span>{description}</span>
+                      </RadioGroup.Description>
                     </div>
                   </div>
-                )}
-              </RadioGroup.Option>
-            ))}
-          </div>
-          <div className="flex flex-grow justify-center">
-            <PotatoImage potatoType={type} />
-          </div>
+                </div>
+              )}
+            </RadioGroup.Option>
+          ))}
         </div>
-      </RadioGroup>
-    </div>
+        <div className="flex flex-grow justify-center">
+          <PotatoImage potatoType={type} />
+        </div>
+      </div>
+    </RadioGroup>
   );
 }
 

@@ -13,7 +13,7 @@ const HotPotatoApp: React.FC = () => {
   useEventListener();
   return (
     <Router>
-      <div className="w-screen">
+      <div className="w-screen mb-20 md:mb-0">
         <NavBar />
         <Switch>
           <Route path="/about">
