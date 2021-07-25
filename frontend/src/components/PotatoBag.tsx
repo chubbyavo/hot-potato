@@ -11,6 +11,7 @@ import { trimAddressForDisplay } from "../utils/misc";
 import { createExplorerAddressLink } from "../utils/links";
 import { ClipboardCopyIcon, ExternalLinkIcon } from "./Icons";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { PotatoImage } from "./PotatoImages";
 
 interface Potato {
   id: number;
@@ -19,50 +20,6 @@ interface Potato {
   lastTossed: number;
   from: string | null;
 }
-
-const TempPotatoImageType0 = () => (
-  <svg height="200" width="200" className="rounded-lg">
-    <rect width="100%" height="100%" fill="dimgray" />
-    <ellipse
-      cx="100"
-      cy="100"
-      rx="90"
-      ry="70"
-      stroke="black"
-      strokeWidth="3"
-      fill="goldenrod"
-      transform="rotate(25, 100, 100)"
-    />
-    <text x="57" y="95">
-      {"I'm a potato (0)"}
-    </text>
-    <text x="18" y="115">
-      {"(placeholder for artwork)"}
-    </text>
-  </svg>
-);
-
-const TempPotatoImageType1 = () => (
-  <svg height="200" width="200" className="rounded-lg">
-    <rect width="100%" height="100%" fill="dimgray" />
-    <ellipse
-      cx="100"
-      cy="100"
-      rx="90"
-      ry="70"
-      stroke="black"
-      strokeWidth="3"
-      fill="darkgoldenrod"
-      transform="rotate(-25, 100, 100)"
-    />
-    <text x="57" y="95">
-      {"I'm a potato (1)"}
-    </text>
-    <text x="18" y="115">
-      {"(placeholder for artwork)"}
-    </text>
-  </svg>
-);
 
 interface PotatoCardProps {
   hotPotato: HotPotato | null;
@@ -166,7 +123,7 @@ function PotatoCard({ hotPotato, type, id, isHot, from }: PotatoCardProps) {
   return (
     <div className="p-4 border-2 border-black rounded-md space-y-4">
       <div className="w-min mx-auto">
-        {type === 0 ? <TempPotatoImageType0 /> : <TempPotatoImageType1 />}
+        <PotatoImage potatoType={type} />
       </div>
       <div>
         <p>Token ID: {id}</p>

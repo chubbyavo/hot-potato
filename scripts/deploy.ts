@@ -25,6 +25,7 @@ async function main() {
   await hotPotato.deployed();
   await hotPotato.addType("https://foobar.com/potato/0");
   await hotPotato.addType("https://foobar.com/potato/1");
+  await hotPotato.addType("https://foobar.com/potato/2");
 
   console.log("HotPotato deployed to:", hotPotato.address);
 }
