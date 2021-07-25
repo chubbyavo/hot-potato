@@ -80,9 +80,7 @@ const BurnButton: React.FC<ButtonProps> = ({
 
   return (
     <button type="button" className={baseClassName} onClick={burn}>
-      <span className="potato-tooltip">
-        {"Burn 🥔 if don't want it (costs 1 MATIC)."}
-      </span>
+      <span className="potato-tooltip">{"Burn 🥔 if don't want it."}</span>
       {burnStatus === "burning" ? burnSpinner : "Burn 🔥"}
     </button>
   );

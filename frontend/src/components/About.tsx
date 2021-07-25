@@ -7,9 +7,8 @@ const About: React.FC = () => {
         <h2>HotPotato</h2>
         <p>
           {"HotPotato is a prank NFT project. "}
-          {`It's very uncool to have a 🥔 in one's wallet (`}
-          <span className="line-through">one will NGMI</span>
-          ).{" The mechanism is inspired by "}
+          {`It's very uncool to have a 🥔 in one's wallet.`}
+          {" The mechanism is inspired by "}
           <a
             href="https://en.wikipedia.org/wiki/Hot_potato"
             target="_blank"
@@ -31,7 +30,7 @@ const About: React.FC = () => {
           <span className="bg-green-200 text-green-600 py-1 px-3 rounded-full mr-2">
             Mint
           </span>
-          mint a new potato
+          mint a new potato (mint fee: 1 MATIC)
         </li>
         <li>
           <span className="bg-blue-200 text-blue-600 py-1 px-3 rounded-full mr-2">
@@ -40,16 +39,10 @@ const About: React.FC = () => {
           transfer unwanted potato to someone else
         </li>
         <li>
-          <span className="bg-yellow-200 text-yellow-600 py-1 px-3 rounded-full mr-2">
-            Bake
-          </span>
-          Bake: make a potato hot again (costs 1 MATIC)
-        </li>
-        <li>
           <span className="bg-red-200 text-red-600 py-1 px-3 rounded-full mr-2">
             Burn
           </span>
-          destroy a potato (costs 1 MATIC)
+          destroy a potato
         </li>
       </article>
     </div>

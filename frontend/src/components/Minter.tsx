@@ -162,9 +162,12 @@ const Minter: React.FC = () => {
           />
           <button
             type="button"
-            className="w-18 md:w-24 font-medium border-2 rounded-md border-black p-2 ml-2 hover:bg-yellow-300"
+            className="w-18 md:w-24 font-medium border-2 rounded-md border-black p-2 ml-2 hover:bg-yellow-300 has-tooltip relative"
             onClick={() => mint(type)}
           >
+            <span className="potato-tooltip">
+              {"Mint and send 🥔 (1 MATIC)."}
+            </span>
             {status === "mint" ? mintingSpinner : "Send 🥔"}
           </button>
         </div>
