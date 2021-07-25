@@ -206,8 +206,8 @@ const PotatoBag: React.FC = () => {
   }, [account, hotPotato, refresh]);
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-center">Your 🥔s:</h2>
+    <div className="container mx-auto mt-3 px-4 space-y-4">
+      <h1 className="text-4xl text-center">Your 🥔s:</h1>
       <div className="flex justify-center text-center">
         {!fetched && <PotatoSpinner />}
         {potatoes.length === 0 &&

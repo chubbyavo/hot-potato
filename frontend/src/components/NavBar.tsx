@@ -16,7 +16,10 @@ const NavBar: React.FC = () => {
             <Link to="/about">About</Link>
           </li>
           <li className="mr-6">
-            <Link to="/app">App</Link>
+            <Link to="/mint">Mint</Link>
+          </li>
+          <li className="mr-6">
+            <Link to="/potatoes">Your 🥔s</Link>
           </li>
         </ul>
       </div>

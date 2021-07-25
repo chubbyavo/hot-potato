@@ -4,8 +4,9 @@ import useEagerConnect from "../hooks/useEagerConnect";
 import useEventListener from "../hooks/useEventListeners";
 import About from "./About";
 import Home from "./Home";
-import MainDApp from "./MainDApp";
+import Mint from "./Mint";
 import NavBar from "./NavBar";
+import PotatoBag from "./PotatoBag";
 
 const HotPotatoApp: React.FC = () => {
   useEagerConnect();
@@ -18,8 +19,11 @@ const HotPotatoApp: React.FC = () => {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/app">
-            <MainDApp />
+          <Route path="/mint">
+            <Mint />
+          </Route>
+          <Route path="/potatoes">
+            <PotatoBag />
           </Route>
           <Route path="/">
             <Home />
