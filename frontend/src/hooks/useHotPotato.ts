@@ -7,7 +7,7 @@ function getContractAddress(): string {
   // TODO: add polygon
   switch (getNetwork()) {
     case Network.Ropsten:
-      return "0x8bBd756cF3345F6DDeaA55295ef33211eE01815e";
+      return "0x2aA9AFaB145a0d62e1FFA956B41d39a19CA4b219";
     default:
       // Hardhat Network
       return "0x5FbDB2315678afecb367f032d93F642f64180aa3";

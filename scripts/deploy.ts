@@ -23,9 +23,9 @@ async function main() {
   const hotPotato = await hotPotatoFactory.deploy();
 
   await hotPotato.deployed();
-  await hotPotato.addType("https://foobar.com/potato/0");
-  await hotPotato.addType("https://foobar.com/potato/1");
-  await hotPotato.addType("https://foobar.com/potato/2");
+  await hotPotato.addType("https://foobar.com/potato/0", { gasLimit: 100000 });
+  await hotPotato.addType("https://foobar.com/potato/1", { gasLimit: 100000 });
+  await hotPotato.addType("https://foobar.com/potato/2", { gasLimit: 100000 });
 
   console.log("HotPotato deployed to:", hotPotato.address);
 }
