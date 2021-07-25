@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { trimAddressForDisplay } from "../utils/misc";
+import { getAddressPrefix, trimAddressForDisplay } from "../utils/misc";
 import { CreditCardIcon } from "./Icons";
 import WalletModal from "./WalletModal";
 
@@ -28,7 +28,10 @@ const WalletButton: React.FC = () => {
         {account ? (
           <div className="flex align-middle">
             <CreditCardIcon />
-            <span>{trimAddressForDisplay(account)}</span>
+            <span className="hidden md:block">
+              {trimAddressForDisplay(account)}
+            </span>
+            <span className="block md:hidden">{getAddressPrefix(account)}</span>
           </div>
         ) : (
           "Connect Wallet"
