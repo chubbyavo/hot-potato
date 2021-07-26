@@ -6,6 +6,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useWeb3React } from "@web3-react/core";
 import { RefreshContext } from "../contexts/RefreshContext";
 import { XIcon } from "./Icons";
+import { isAddressOrEnsName } from "../utils/misc";
 
 interface TossButtonProps {
   hotPotato: HotPotato | null;
@@ -32,28 +33,43 @@ const TossButton: React.FC<TossButtonProps> = ({
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
 
-  const [toAddress, setToAddress] = useState("");
+  const [toAddressOrEnsName, setToAddressOrEnsName] = useState("");
   const [tossStatus, setTossStatus] = useState("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const { triggerRefresh } = useContext(RefreshContext);
 
+  const showAddressInputError = () =>
+    errorMessage !== "" ||
+    (!isAddressOrEnsName(toAddressOrEnsName) && toAddressOrEnsName !== "");
+
+  const onInputChange = (input: string) => {
+    setErrorMessage("");
+    setToAddressOrEnsName(input);
+  };
+
   const toss = async () => {
-    if (hotPotato === null || !account || !ethers.utils.isAddress(toAddress)) {
+    if (
+      hotPotato === null ||
+      !account ||
+      !isAddressOrEnsName(toAddressOrEnsName)
+    ) {
       return;
     }
 
     setTossStatus("tossing");
     try {
-      const tx = await hotPotato.transferFrom(account, toAddress, id);
+      const tx = await hotPotato.transferFrom(account, toAddressOrEnsName, id);
       await tx.wait();
       setTossStatus("complete");
       triggerRefresh();
     } catch (error) {
+      if (error.reason && error.reason.includes("ENS")) {
+        setErrorMessage("Invalid ENS name");
+      }
+      // TODO: handle other errors
       setTossStatus("idle");
     }
   };
-
-  const showAddressInputError = () =>
-    !ethers.utils.isAddress(toAddress) && toAddress !== "";
 
   return (
     <div>
@@ -113,8 +129,8 @@ const TossButton: React.FC<TossButtonProps> = ({
                   <input
                     className="flex-grow p-2 border-2 rounded-md border-black"
                     type="text"
-                    placeholder="0xabcd...1234"
-                    onChange={(event) => setToAddress(event?.target.value)}
+                    placeholder="0xabcd... or ENS name"
+                    onChange={(event) => onInputChange(event?.target.value)}
                     required
                   />
                   <button
@@ -126,7 +142,9 @@ const TossButton: React.FC<TossButtonProps> = ({
                   </button>
                 </form>
                 {showAddressInputError() && (
-                  <span className="text-xs text-red-600">Invalid Address</span>
+                  <span className="text-xs text-red-600">
+                    {errorMessage || "Invalid Address"}
+                  </span>
                 )}
               </div>
             </div>

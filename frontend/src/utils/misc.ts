@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 export function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -33,6 +35,10 @@ export function toTimeDescription(timestamp: number): string {
   }
 
   return `${daysElapsed} days ago`;
+}
+
+export function isAddressOrEnsName(input: string): boolean {
+  return ethers.utils.isAddress(input) || input.endsWith(".eth");
 }
 
 export function trimAddressForDisplay(address: string): string {

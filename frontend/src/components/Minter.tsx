@@ -6,6 +6,7 @@ import Confetti from "react-confetti";
 import { RefreshContext } from "../contexts/RefreshContext";
 import { RadioGroup } from "@headlessui/react";
 import { PotatoImage } from "./PotatoImages";
+import { isAddressOrEnsName } from "../utils/misc";
 
 const MintConfetti: React.FC = () => {
   const { width, height } = useWindowSize();
@@ -104,10 +105,6 @@ const Minter: React.FC = () => {
   const { triggerRefresh } = useContext(RefreshContext);
   const [type, setType] = useState(0);
 
-  const isAddressOrEnsName = (input: string) => {
-    return ethers.utils.isAddress(toAddressOrEnsName) || input.endsWith(".eth");
-  };
-
   const showAddressInputError = () =>
     errorMessage !== "" ||
     (!isAddressOrEnsName(toAddressOrEnsName) && toAddressOrEnsName !== "");
@@ -163,7 +160,7 @@ const Minter: React.FC = () => {
               showAddressInputError() ? "border-red-600" : "border-black"
             }`}
             type="text"
-            placeholder="0xabcd... or ENS name"
+            placeholder="0xabcd...1234 or ENS name"
             required
             onChange={(event) => onInputChange(event?.target.value)}
           />
