@@ -98,28 +98,34 @@ function PotatoTypeRadioGroup({
 const Minter: React.FC = () => {
   const hotPotato = useHotPotato();
 
-  const [toAddress, setToAddress] = useState("");
+  const [toAddressOrEnsName, setToAddressOrEnsName] = useState("");
   const [status, setStatus] = useState("idle");
-  const [type, setType] = useState(0);
+  const [errorMessage, setErrorMessage] = useState("");
   const { triggerRefresh } = useContext(RefreshContext);
+  const [type, setType] = useState(0);
+
+  const isAddressOrEnsName = (input: string) => {
+    return ethers.utils.isAddress(toAddressOrEnsName) || input.endsWith(".eth");
+  };
 
   const showAddressInputError = () =>
-    !ethers.utils.isAddress(toAddress) && toAddress !== "";
+    errorMessage !== "" ||
+    (!isAddressOrEnsName(toAddressOrEnsName) && toAddressOrEnsName !== "");
 
-  const onAddressInputChange = (address: string) => {
-    setToAddress(address);
+  const onInputChange = (input: string) => {
+    setErrorMessage("");
+    setToAddressOrEnsName(input);
   };
 
   const mint = async (type: number) => {
-    // TODO: surface errors in a better way.
-    if (hotPotato === null || !ethers.utils.isAddress(toAddress)) {
+    if (hotPotato === null || !isAddressOrEnsName(toAddressOrEnsName)) {
       return;
     }
 
     setStatus("mint");
     try {
       const mintFee = await hotPotato.mintFee();
-      const tx = await hotPotato.safeMint(type, toAddress, {
+      const tx = await hotPotato.safeMint(type, toAddressOrEnsName, {
         value: mintFee,
         gasLimit: 250000,
       });
@@ -128,7 +134,10 @@ const Minter: React.FC = () => {
       setStatus("complete");
       setTimeout(() => setStatus("idle"), 15000);
     } catch (error) {
-      // TODO: surface error
+      if (error.reason && error.reason.includes("ENS")) {
+        setErrorMessage("Invalid ENS name");
+      }
+      // TODO: handle other errors
       setStatus("idle");
     }
   };
@@ -154,9 +163,9 @@ const Minter: React.FC = () => {
               showAddressInputError() ? "border-red-600" : "border-black"
             }`}
             type="text"
-            placeholder="0xabcd...1234"
+            placeholder="0xabcd... or ENS name"
             required
-            onChange={(event) => onAddressInputChange(event?.target.value)}
+            onChange={(event) => onInputChange(event?.target.value)}
           />
           <button
             type="button"
@@ -170,7 +179,9 @@ const Minter: React.FC = () => {
           </button>
         </div>
         {showAddressInputError() && (
-          <span className="text-xs text-red-600">Invalid Address</span>
+          <span className="text-xs text-red-600">
+            {errorMessage || "Invalid Address"}
+          </span>
         )}
         {status === "complete" && (
           <span className="text-xs text-green-500">
